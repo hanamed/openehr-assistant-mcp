@@ -46,6 +46,8 @@ Prerequisites
 - Docker and Docker Compose
 - Git
 
+>Note: Container images are published to GitHub Container Registry (GHCR) as `ghcr.io/cadasto/openehr-assistant-mcp:latest` (you can use this image name anywhere you would use the Docker image reference).
+
 1) Clone
 
 ```bash
@@ -62,7 +64,7 @@ cp .env.example .env
 docker compose up -d mcp --build
 ```
 
-The server listens by default at https://openehr-assistant-mcp.local on port `443` using the streamable HTTP transport, served by Caddy inside the container.
+The server listens by default at https://openehr-assistant-mcp.local (on port `443`) using the streamable HTTP transport, served by Caddy inside the container.
 You can change the domain suffix by setting the `DOMAIN` variable (defaults to `local`).
 
 ## Development
@@ -88,17 +90,22 @@ cp .env.example .env
 ```bash
 docker compose -f docker-compose.yml -f docker-compose.dev.yml exec mcp composer install
 ```
+
 4) Use the MCP server
 Use the streamable HTTP transport with http://openehr-assistant-mcp.local:8343/ address in your MCP client.
 > Note: The dev container is configured to expose port 8343 on the host.
-> The codebase is mounted inside the container.
- 
+> The codebase is volume-mounted inside the container. 
 
 Alternatively, run the MCP server as stdio:
 ```bash
 docker compose -f docker-compose.yml -f docker-compose.dev.yml exec mcp php public/index.php --transport=stdio
 ```
 or, in case the MCP client does not have direct access to the docker compose project, but the image is already built (use `make build` to build the image):
+```bash
+docker run --rm -i cadasto/openehr-assistant-mcp:latest php public/index.php --transport=stdio
+```
+
+or alternatively, in case the MCP client does not have direct access to the docker compose project, but the image is already built (use `make build` to build the image):
 ```bash
 docker run --rm -i cadasto/openehr-assistant-mcp:latest php public/index.php --transport=stdio
 ```
@@ -127,7 +134,7 @@ Note: Authorization headers are not required nor configured by default. If you n
 
 ### Claude Desktop mcpServers example
 
-Stdio example for local development (use Docker)
+Example for local development (use Docker)
 ```json
 {
   "mcpServers": {
