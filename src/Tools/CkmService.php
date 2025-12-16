@@ -88,6 +88,9 @@ final readonly class CkmService
      * Retrieve a CKM archetype definition by CID, in a specific representation format.
      *
      * Use this tool after you have identified a candidate archetype (usually from the `ckm_archetype_search` tool).
+     * Identification is based on the CKM Archetype identifier (CID), or
+     * based on human-readable archetype-id (also known as `resourceMainId` in the search response).
+     *
      * It fetches the *full archetype definition* from CKM so an LLM can:
      * - understand the structure and semantic or meaning of nodes/attributes,
      * - extract constraints, translations, and terminology bindings,
@@ -102,8 +105,8 @@ final readonly class CkmService
      * Implementation detail (relevant to clients):
      * - For best results, pass the CID exactly as returned by `ckm_archetype_search` tool.
      *
-     * @param string $cid
-     *   CKM archetype identifier (CID). Example: "1013.1.7850".
+     * @param string $identifier
+     *   CID identifier (e.g. "1013.1.7850") or archetype-id (e.g. "openEHR-EHR-OBSERVATION.blood_pressure.v1").
      *
      * @param string $format
      *   Desired representation: "adl", "xml" or "mindmap" (this server accepts case-insensitive).
@@ -116,13 +119,26 @@ final readonly class CkmService
      *   If the CKM API request fails (invalid CID, unsupported format mapping, upstream error).
      */
     #[McpTool(name: 'ckm_archetype_get')]
-    public function archetypeGet(string $cid, string $format = 'adl'): TextContent
+    public function archetypeGet(string $identifier, string $format = 'adl'): TextContent
     {
         $this->logger->debug('called ' . __METHOD__, func_get_args());
+        $identifier = trim($identifier);
+        $cid = null;
         try {
             $archetypeFormat = Map::archetypeFormat($format);
             $contentType = Map::contentType($archetypeFormat);
-            $cid = preg_replace('/[^\d.]/', '-', $cid);
+            // If the identifier is an archetype-id, then resolve it to the corresponding CID
+            if (str_contains($identifier, 'openEHR-')) {
+                try {
+                    $response = $this->apiClient->get("v1/archetypes/citeable-identifier/$identifier");
+                    $cid = ($response->getStatusCode() === 200) ? $response->getBody()->getContents() : null;
+                } catch (ClientExceptionInterface $e) {
+                    $this->logger->error('Failed to resolve CID identifier', ['error' => $e->getMessage(), 'identifier' => $identifier]);
+                }
+            }
+            // if CID is not yet resolved, then normalize the identifier to a CID
+            $cid = $cid ?? preg_replace('/[^\d.]/', '-', $identifier);
+            // retrieve the archetype definition
             $response = $this->apiClient->get("v1/archetypes/{$cid}/{$archetypeFormat}", [
                 RequestOptions::HEADERS => [
                     'Accept' => $contentType,
@@ -133,7 +149,7 @@ final readonly class CkmService
             $this->logger->debug(__METHOD__, [$contentType => $data]);
             return TextContent::code($data, $contentType);
         } catch (ClientExceptionInterface $e) {
-            $this->logger->error('Failed to retrieve the CKM Archetype', ['error' => $e->getMessage(), 'cid' => $cid, 'format' => $format]);
+            $this->logger->error('Failed to retrieve the CKM Archetype', ['error' => $e->getMessage(), 'identifier' => $identifier, 'cid' => $cid, 'format' => $format]);
             throw new \RuntimeException('Failed to retrieve the CKM Archetype: ' . $e->getMessage(), 0, $e);
         }
     }

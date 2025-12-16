@@ -22,8 +22,8 @@ A PHP 8.4 [Model Context Protocol (MCP) Server](https://modelcontextprotocol.io/
 ### Tools
 
 CKM (Clinical Knowledge Manager)
-- `ckm_archetype_search` - List archetypes from the CKM server matching search criteria
-- `ckm_archetype_get` - Get a CKM archetype by its CID identifier
+- `ckm_archetype_search` - List Archetypes from the CKM server matching search criteria
+- `ckm_archetype_get` - Get a CKM Archetype by its identifier
 
 openEHR Type specification
 - `type_specification_search` - List bundled openEHR Type specifications matching search criteria.
