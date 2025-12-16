@@ -29,32 +29,46 @@ final readonly class CkmService
      *
      * 1) Search by a domain keyword (e.g. "blood pressure", "medication", "problem list")
      * 2) Inspect the returned metadata for plausible matches
-     * 3) Take the returned CKM identifier (CID) and call {@see archetypeGet()} to retrieve the full archetype definition.
+     * 3) Take the returned CKM identifier (CID) and call `ckm_archetype_get` tool to retrieve the full archetype definition.
      *
      * Important notes for MCP/LLM clients:
      * - This tool performs a keyword search on CKM "main data" (server-side filtering).
      * - The returned structure is the upstream CKM JSON response decoded into PHP arrays. It is *not normalized* by this server.
-     * - If you need deterministic fields for downstream reasoning, treat this as a discovery step and rely on {@see archetypeGet()} for authoritative content.
+     * - If you need deterministic fields for downstream reasoning,
+     *      treat this as a discovery step and rely on the `ckm_archetype_get` tool for authoritative content.
      *
      * @param string $keyword
-     *   A human-oriented search string. Prefer meaningful clinical terms over internal codes.
+     *   A human-oriented search string, one or multiple words, wildcards `*` supported. Prefer meaningful clinical terms over internal codes.
      *   Examples: "blood pressure", "observation", "medication", "diabetes", "body weight".
      *
+     * @param int $limit
+     *   The maximum number of archetypes returned in the call, 10 as default.
+     *
+     * @param int $offset
+     *   The offset into the result set, for paging, default 0.
+     *
+     * @param bool $requireAllSearchWords
+     *   If multiple search words, should ALL words be required (`true`, as default), or is ANY sufficient (`false`).
+     *
      * @return array<array<string,mixed>>
-     *   A list of CKM archetype metadata entries as returned by CKM. Entries usually include a CID-like identifier and descriptive fields.
+     *   A list of CKM archetype metadata entries as returned by CKM.
+     *   Entries usually include a CID identifier, resourceMainId, resourceMainDisplayName, and other descriptive fields.
      *
      * @throws \RuntimeException
      *   If the CKM API request fails (network error, upstream outage, invalid response).
      */
     #[McpTool(name: 'ckm_archetype_search')]
-    public function archetypeSearch(string $keyword): array
+    public function archetypeSearch(string $keyword, int $limit = 10, int $offset = 0, bool $requireAllSearchWords = true): array
     {
         $this->logger->debug('called ' . __METHOD__, func_get_args());
         try {
             $response = $this->apiClient->get('v1/archetypes', [
                 RequestOptions::QUERY => [
                     'search-text' => $keyword,
+                    'size' => $limit,
+                    'offset' => $offset,
                     'restrict-search-to-main-data' => 'true',
+                    'require-all-search-words' => $requireAllSearchWords ? 'true' : 'false',
                 ],
                 RequestOptions::HEADERS => [
                     'Accept' => 'application/json',
@@ -71,29 +85,28 @@ final readonly class CkmService
     }
 
     /**
-     * Retrieve a CKM archetype definition by CID, in a specific representation.
+     * Retrieve a CKM archetype definition by CID, in a specific representation format.
      *
-     * Use this tool after you have identified a candidate archetype (usually from {@see archetypeSearch()}).
+     * Use this tool after you have identified a candidate archetype (usually from the `ckm_archetype_search` tool).
      * It fetches the *full archetype definition* from CKM so an LLM can:
-     * - understand the structure and meaning of nodes/attributes,
-     * - extract constraints and terminology bindings,
+     * - understand the structure and semantic or meaning of nodes/attributes,
+     * - extract constraints, translations, and terminology bindings,
      * - generate templates or implementation guidance,
      * - or cite the definition content in downstream reasoning.
      *
      * Returned content and formats:
      * - "adl": ADL source text (best for detailed archetype semantics and constraints)
-     * - "xml": XML representation (helpful when consuming via XML tooling)
-     * - "mindmap": mindmap form (useful for quick navigation / conceptual overview)
+     * - "xml": XML representation (similar to "adl", but helpful when consuming via XML tooling)
+     * - "mindmap": mindmap form (useful for quick visual overview)
      *
      * Implementation detail (relevant to clients):
-     * - The CID is normalized before building the upstream URL (characters outside digits and dots are replaced with "-").
-     *   For best results, pass the CID exactly as returned by CKM search.
+     * - For best results, pass the CID exactly as returned by `ckm_archetype_search` tool.
      *
      * @param string $cid
-     *   CKM archetype identifier (CID). Example: "openEHR-EHR-OBSERVATION.blood_pressure.v2".
+     *   CKM archetype identifier (CID). Example: "1013.1.7850".
      *
      * @param string $format
-     *   Desired representation: "adl", "xml" or "mindmap" (case-insensitive is accepted by this server).
+     *   Desired representation: "adl", "xml" or "mindmap" (this server accepts case-insensitive).
      *   Defaults to "adl".
      *
      * @return TextContent
