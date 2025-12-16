@@ -10,21 +10,23 @@ A PHP 8.4 [Model Context Protocol (MCP) Server](https://modelcontextprotocol.io/
 
 - PHP 8.4; PSR-compliant codebase
 - Attribute-based MCP tool discovery (via https://github.com/mcp/sdk)
+- Attribute-based MCP prompt discovery (seeded conversations for complex tasks)
 - Docker images for production and development
 - Transports: streamable HTTP and stdio (for development)
 - Structured logging with Monolog
 - Simple, environment-driven configuration
+- Built-in developer guidelines exposed as MCP Resources via `guidelines://{category}/{version}/{name}` URIs
 
 ## Available MCP Elements
 
 ### Tools
 
 CKM (Clinical Knowledge Manager)
-- `ckm_archetype_search` - List archetypes from the CKM server
+- `ckm_archetype_search` - List archetypes from the CKM server matching search criteria
 - `ckm_archetype_get` - Get a CKM archetype by its CID identifier
 
 openEHR Type specification
-- `type_specification_search` - List bundled openEHR Type specifications using `namePattern` (supports `*` wildcard) and an optional keyword (filters by type specification content). Returns `type`, `description`, `component`, and `file` (relative path).
+- `type_specification_search` - List bundled openEHR Type specifications matching search criteria.
 - `type_specification_get` - Retrieve an openEHR Type specification (as BMM JSON) by relative file path or by openEHR type name. Note: these are BMM type definitions, not JSON Schema
 
 ### Prompts
@@ -32,6 +34,21 @@ openEHR Type specification
 Optional prompts that guide AI assistants through common openEHR and CKM workflows using the tools above.
 - `ckm_archetype_explorer` - Explore CKM archetypes by listing and fetching definitions (ADL/XML/Mindmap) by CID.
 - `type_specification_explorer` - Discover and fetch openEHR Type specifications (as BMM JSON) using type_specification_search and type_specification_get.
+- `explain_archetype_semantics` - Explain an archetype’s semantics (audiences, elements, constraints) with links to local guidelines.
+- `translate_archetype_language` - Translate an archetype’s terminology section between languages with safety checks.
+- `fix_adl_syntax` - Strictly correct ADL syntax without changing semantics; provides before/after and notes.
+- `design_or_review_archetype` - Guide a design or review task for a specific concept/RM class with structured outputs.
+
+### Resources
+
+Guidelines (Markdown) are exposed as MCP Resources and can be fetched by MCP clients using `guidelines://` URIs.
+
+- URI template: `guidelines://{category}/{version}/{name}`
+- On-disk mapping: `resources/guidelines/{category}/{version}/{name}.md`
+
+Examples
+- `guidelines://archetypes/v1/checklist`
+- `guidelines://archetypes/v1/adl-syntax`
 
 ## Transports
 

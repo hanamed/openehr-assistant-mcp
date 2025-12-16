@@ -113,9 +113,14 @@ docker compose -f docker-compose.yml -f docker-compose.dev.yml exec mcp vendor\b
 - Keep methods small; use typed signatures; add phpdoc where types aren’t obvious.
 
 
-## MCP conventions (Tools and Prompts)
+## MCP conventions (Tools, Prompts, and Resources)
 - Tools live in `src\Tools`; annotate public methods with `#[McpTool(name: '...')]` for discovery by `modelcontextprotocol/php-sdk` in `public/index.php`.
-- Prompts live in `src\Prompts`; keep prompt descriptions focused on guiding tool orchestration.
+- Prompts live in `src\Prompts`; annotate prompt classes with `#[McpPrompt(name: '...')]`. Current prompt names include:
+  - `ckm_archetype_explorer`, `type_specification_explorer`
+  - `explain_archetype_semantics`, `translate_archetype_language`, `fix_adl_syntax`, `design_or_review_archetype`
+- Resources: developer guidelines are exposed as MCP Resources via `Guidelines` under `src\Resources`.
+  - URI template: `guidelines://{category}/{version}/{name}` (e.g., `guidelines://archetypes/v1/checklist`).
+  - Files map to `resources/guidelines/{category}/{version}/{name}.md`.
 - Constants and versioning live in `src\constants.php` (see `APP_VERSION`).
 
 
@@ -139,6 +144,10 @@ PR checklist:
 - Docs updated if needed
 - No debug code or leftover comments
 - All checks (CI) pass
+
+Testing notes
+- Prompt tests live under `tests/Prompts` and validate the `__invoke()` message shape and `#[McpPrompt]` attributes.
+- Guidelines resource tests live under `tests/Resources` and validate that `Guidelines::addResources()` registers `guidelines://...` resources and that `Guidelines::read()` loads known documents.
 
 
 ## Branching, issues, and release notes

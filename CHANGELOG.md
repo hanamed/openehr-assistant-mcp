@@ -9,7 +9,13 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 
 ## [Unreleased]
 
+## [0.2.0] - 2025-12-16
+
 ### Added
+
+- CKM tools improvements
+- MCP Prompts: `explain_archetype_semantics`, `translate_archetype_language`, `fix_adl_syntax`, `design_or_review_archetype`
+- MCP Resources: developer guidelines exposed via `guidelines://{category}/{version}/{name}` URIs (e.g., `guidelines://archetypes/v1/checklist`).
 - CI: publish production Docker image to GitHub Container Registry (GHCR) on pushes to main.
 
 ## [0.1.0] - 2025-12-14
