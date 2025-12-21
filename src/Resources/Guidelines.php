@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace Cadasto\OpenEHR\MCP\Assistant\Resources;
 
+use Cadasto\OpenEHR\MCP\Assistant\CompletionProviders\ArchetypeGuidelines;
 use FilesystemIterator;
+use Mcp\Capability\Attribute\CompletionProvider;
 use Mcp\Capability\Attribute\McpResourceTemplate;
 use Mcp\Exception\ResourceReadException;
 use Mcp\Server\Builder;
@@ -17,22 +19,29 @@ final class Guidelines
     public const string DIR = APP_DIR . '/resources/guidelines';
 
     /**
-     * Read a task-guideline markdown file from the resources/guidelines tree.
+     * Read a guideline markdown file from the resources/guidelines tree.
      *
-     * URI template variables map to on-disk path segments:
+     * URI template:
      *  guidelines://{category}/{version}/{name}
      *
      * Examples:
-     *  - guidelines://archetypes/v1/checklist -> resources/guidelines/archetypes/v1/checklist.md
-     *  - guidelines://archetypes/v1/adl-syntax -> resources/guidelines/archetypes/v1/adl-syntax.md
+     *  - guidelines://archetypes/v1/checklist
+     *  - guidelines://archetypes/v1/adl-syntax
      */
     #[McpResourceTemplate(
         uriTemplate: 'guidelines://{category}/{version}/{name}',
         name: 'guideline',
-        description: 'The openEHR Assistant task-guideline document (markdown) identified by category/version/name',
+        description: 'The openEHR Assistant guideline document (markdown) identified by category/version/name',
         mimeType: 'text/markdown'
     )]
-    public function read(string $category, string $version, string $name): string
+    public function read(
+        #[CompletionProvider(values: ['archetypes'])]
+        string $category,
+        #[CompletionProvider(values: ['v1'])]
+        string $version,
+        #[CompletionProvider(provider: ArchetypeGuidelines::class)]
+        string $name
+    ): string
     {
         foreach ([$category, $version, $name] as $segment) {
             if ($segment === '' || !\preg_match('/^[\w-]+$/', $segment)) {
