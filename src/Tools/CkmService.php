@@ -77,7 +77,6 @@ final readonly class CkmService
             ]);
             $data = json_decode($response->getBody()->getContents(), true);
             $this->logger->info('Found CKM Archetypes', ['keyword' => $keyword, 'count' => is_countable($data) ? count($data) : null]);
-            $this->logger->debug(__METHOD__, ['response' => $data]);
             return $data;
         } catch (ClientExceptionInterface $e) {
             $this->logger->error('Failed to search for CKM Archetypes', ['error' => $e->getMessage()]);
@@ -145,10 +144,9 @@ final readonly class CkmService
                     'Accept' => $contentType,
                 ],
             ]);
-            $data = $response->getBody()->getContents();
+            $data = trim($response->getBody()->getContents());
             $this->logger->info('CKM Archetype retrieved successfully', ['cid' => $cid, 'format' => $archetypeFormat, 'status' => $response->getStatusCode()]);
-            $this->logger->debug(__METHOD__, [$contentType => $data]);
-            return TextContent::code($data);
+            return TextContent::code($data, $format);
         } catch (ClientExceptionInterface $e) {
             $this->logger->error('Failed to retrieve the CKM Archetype', ['error' => $e->getMessage(), 'identifier' => $identifier, 'cid' => $cid, 'format' => $format]);
             throw new \RuntimeException('Failed to retrieve the CKM Archetype: ' . $e->getMessage(), 0, $e);

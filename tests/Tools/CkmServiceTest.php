@@ -74,12 +74,12 @@ final class CkmServiceTest extends TestCase
         $this->assertInstanceOf(TextContent::class, $content);
         $this->assertStringContainsString('archetype ADL content', $content->text);
         $this->assertStringContainsString('```', $content->text);
-        $this->assertStringContainsString('text/plain', $content->text);
     }
 
     public function testExceptionsAreWrappedAsRuntimeException(): void
     {
-        $exception = new class('boom') extends \RuntimeException implements ClientExceptionInterface { };
+        $exception = new class('boom') extends \RuntimeException implements ClientExceptionInterface {
+        };
 
         $this->client
             ->expects($this->once())
