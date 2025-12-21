@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Cadasto\OpenEHR\MCP\Assistant\Tools;
 
 use Generator;
-use Mcp\Schema\Content\TextContent;
 use Mcp\Capability\Attribute\McpTool;
+use Mcp\Exception\ToolCallException;
 use Psr\Log\LoggerInterface;
 use SplFileInfo;
 
@@ -23,13 +23,34 @@ readonly final class TypeSpecificationService
         }
     }
 
-    private function getCandidateFiles(string $namePattern): Generator
+    /**
+     * Retrieves candidate files from the BMM directory matching a specified name pattern.
+     *
+     * This method generates a list of file objects from the defined BMM directory that match the given name pattern.
+     * The name pattern supports a simple `*` wildcard and case-insensitive matching for `.bmm.json` files.
+     *
+     * Matching behavior:
+     * - The `namePattern` is transformed into a case-insensitive regular expression.
+     * - The pattern supports `*` as a wildcard for multiple characters.
+     * - Only files with the `.json` extension are considered.
+     * - Files must be readable and non-empty to be included in the results.
+     *
+     * @param string $namePattern
+     *   The name pattern to match file names against. The pattern supports:
+     *   - Wildcard `*` for zero or more characters.
+     *   - Exact matching for specified strings.
+     *   The file extension `.bmm.json` is automatically appended during the match.
+     *
+     * @return Generator
+     *   A generator yielding `SplFileInfo` objects for matching files.
+     */
+    public function getCandidateFiles(string $namePattern): Generator
     {
         // prepare glob-like regex from the pattern (supports * wildcard)
-        $namePattern = str_replace(['\\*', '\\?'], ['[\w-]*', '[\w-]'], preg_quote($namePattern, '/'));
-        $regex = '/^org\.openehr\.(?:[\w-]+\.)*' . $namePattern . '\.bmm\.json$/i';
+        $namePattern = strtoupper(trim($namePattern));
+        $namePattern = str_replace(['\\*', '\\?', '.', '\\/'], ['[\w-]*', '[\w-]', '', ''], preg_quote($namePattern, '/'));
+        $regex = '/^' . $namePattern . '\.bmm\.json$/i';
 
-        $results = [];
         $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(self::BMM_DIR, \FilesystemIterator::SKIP_DOTS));
         /** @var SplFileInfo $fileInfo */
         foreach ($iterator as $fileInfo) {
@@ -44,25 +65,24 @@ readonly final class TypeSpecificationService
     }
 
     /**
-     * Search bundled openEHR type specifications (BMM JSON) by type-name pattern, optionally filtered by a keyword.
+     * Search openEHR Type specifications (as BMM JSON) by type's name pattern, optionally filtered by a keyword.
      *
      * This tool is designed for LLM workflows that need to:
-     * - discover the canonical definition of an openEHR type (class),
-     * - locate the exact BMM JSON file that defines a type,
-     * - and then fetch the full definition via `type_specification_get`.
+     * - discover the canonical definition of an openEHR Type (class),
+     * - locate the exact type specification server resource uri,
+     * - or fetch the full definition via the `type_specification_get` tool.
      *
      * Matching behaviour (important for predictable client usage):
-     * - `namePattern` supports a simple `*` wildcard (glob-like).
+     * - `namePattern` minimal 3 chars, supports a simple `*` wildcard (glob-like).
      * - `keyword` filtering is a plain substring check against the raw JSON contents.
      *
      * Returned fields (per result):
-     * - `type`: the openEHR type name (from the JSON `name` field)
-     * - `description`: documentation/description (from JSON `documentation` when present)
+     * - `name`: the openEHR Type name (e.g. `DV_QUANTITY`)
+     * - `documentation`: documentation or description of the type
      * - `component`: the openEHR component name (e.g. `AM`, `RM`, etc.)
-     * - `file`: relative path under the BMM directory (pass this into `type_specification_get` for exact retrieval)
-     *
-     * If nothing matches, this tool returns a single-element array describing the error condition.
-     * Treat that as “no results” rather than an exception.
+     * - `resourceUri`: uri of corresponding resource in the `openehr://spec/type` namespace
+     * - `package`: package name (e.g. `org.openehr.rm.datatypes`)
+     * - `specUrl`: link to the corresponding openEHR specification page and fragment with more narrative details
      *
      * @param string $namePattern
      *   A type-name pattern. Examples:
@@ -71,11 +91,11 @@ readonly final class TypeSpecificationService
      *   - `DV_*` (family search)
      *
      * @param string $keyword
-     *   Optional raw substring filter applied to the JSON content (not normalized; case-sensitive).
-     *   Use this when you want to narrow results to types containing a concept or attribute name.
+     *   Optional raw substring filter applied to the JSON content (not normalized; case-insensitive).
+     *   Use this when you want to narrow results to Types containing a concept or attribute name.
      *
-     * @return array<int, array<string, string>>
-     *   A list of metadata records (see fields above), or a single record with `error: not found`.
+     * @return array<int, array<string, string|null>>
+     *   A list of metadata records (see fields above), or an empty array if nothing matches.
      */
     #[McpTool(name: 'type_specification_search')]
     public function search(string $namePattern, string $keyword = ''): array
@@ -83,7 +103,7 @@ readonly final class TypeSpecificationService
         $this->logger->debug('called ' . __METHOD__, func_get_args());
         $namePattern = trim($namePattern);
         $keyword = trim($keyword);
-        if (!$namePattern) {
+        if (!$namePattern || strlen($namePattern) < 3) {
             return [];
         }
 
@@ -98,11 +118,15 @@ readonly final class TypeSpecificationService
                     }
                     $data = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
                     if (is_array($data)) {
+                        $name = (string)($data['name'] ?? $fileInfo->getFilename());
+                        $component = strtoupper(basename($fileInfo->getPath()));
                         $results[] = [
-                            'type' => (string)($data['name'] ?? $fileInfo->getFilename()),
-                            'description' => (string)($data['documentation'] ?? $data['name'] ?? ''),
-                            'component' => basename($fileInfo->getPath()),
-                            'file' => str_replace(self::BMM_DIR . '/', '', $fileInfo->getPathname()),
+                            'name' => $name,
+                            'documentation' => $data['documentation'] ?? null,
+                            'resourceUri' => 'openehr://spec/type/' . $component . '/' . $name,
+                            'component' => $component,
+                            'package' => $data['package'] ?? null,
+                            'specUrl' => $data['specUrl'] ?? null,
                         ];
                     }
                 }
@@ -111,60 +135,54 @@ readonly final class TypeSpecificationService
             }
         }
         $this->logger->info('BMM list results', ['count' => count($results), 'namePattern' => $namePattern, 'keyword' => $keyword]);
-        $this->logger->debug('BMM list results', $results);
-        return $results ?: [['error' => 'not found', 'namePattern' => $namePattern, 'keyword' => $keyword]];
+        return $results ?: [];
     }
 
     /**
-     * Retrieve one openEHR type specification as BMM JSON.
+     * Retrieve one openEHR Type specification as BMM JSON.
      *
-     * Use this tool when you need the full, machine-readable BMM definition for a type so an LLM can:
+     * Use this tool when you need to retrieve the full, machine-readable BMM definition for a type so an LLM can:
      * - inspect properties/attributes and their declared types,
-     * - understand inheritance (supertypes/subtypes),
+     * - understand inheritance (super-types/sub-types),
      * - reason about constraints and semantics encoded in the BMM model,
      * - or generate client code / mappings based on the canonical model definition.
      *
-     * Output:
-     * - Returns text with the raw BMM JSON file contents.
+     * Do not use this tool to discover candidate types, use `type_specification_search` for that.
      *
      * Error handling:
-     * - If nothing matches, returns a JSON object with `{ "error": "not found", "identifier": "..." }` as text content.
-     *   (This is a non-exceptional "not found" outcome; clients should handle it explicitly.)
+     * - If nothing matches, returns an exception.
      *
+     * @param string $name
+     *   The openEHR Type name (e.g. `DV_QUANTITY`)
      *
-     * @param string $typeOrFile
-     *   Either a relative BMM JSON file path under the bundled resources, or a type name or wildcard pattern.
+     * @param string $component
+     *   Optional, the openEHR Component name (e.g. `RM`, `AM`, `BASE`, etc.), for better matching or filtering.
+     *   If omitted, the first matching openEHR Type specification is returned.
      *
-     * @return TextContent
-     *   The resolved BMM JSON as `json` text content (or an error JSON payload if not found).
+     * @return array<string, mixed>
+     *   The openEHR Type as BMM JSON.
      *
-     * @throws \InvalidArgumentException
-     *   If the identifier is empty after normalization.
+     * @throws ToolCallException
+     *   If the name is empty after normalization, or if no matching specification is found.
      */
     #[McpTool(name: 'type_specification_get')]
-    public function get(string $typeOrFile): TextContent
+    public function get(string $name, string $component = ''): array
     {
         $this->logger->debug('called ' . __METHOD__, func_get_args());
-        // Normalize identifier
-        $typeOrFile = trim((string)str_replace('..', '', $typeOrFile));
-        if (!$typeOrFile) {
-            throw new \InvalidArgumentException('Identifier cannot be empty');
+        $name = trim((string)str_replace(['.', '*', '/', '\\'], '', $name));
+        if (!$name) {
+            throw new ToolCallException('Name cannot be empty');
         }
-        // First, try as a relative path
-        $candidate = self::BMM_DIR . '/' . str_replace('\\', '/', $typeOrFile);
-        if (is_file($candidate) && is_readable($candidate)) {
-            $this->logger->info('Found bmm', ['filename' => $candidate]);
-            $json = (string)file_get_contents($candidate);
-            return TextContent::code($json, 'json');
-        }
-        // Then, search by type name
-        foreach ($this->getCandidateFiles($typeOrFile) as $fileInfo) {
-            $this->logger->info('Found bmm', ['pattern' => $fileInfo->getFilename()]);
+        foreach ($this->getCandidateFiles($name) as $fileInfo) {
+            $this->logger->info('Found BMM', ['pattern' => $fileInfo->getFilename()]);
+            if ($component && $component !== basename($fileInfo->getPath())) {
+                $this->logger->info('Component not matching', ['pattern' => $fileInfo->getFilename()]);
+                continue;
+            }
             $json = (string)file_get_contents($fileInfo->getPathname());
-            return TextContent::code($json, 'json');
+            return json_decode($json, true);
         }
-        $this->logger->info('Bmm not found', ['identifier' => $typeOrFile]);
-        $json = (string)json_encode(['error' => 'not found', 'identifier' => $typeOrFile], JSON_PRETTY_PRINT);
-        return TextContent::code($json, 'json');
+        $this->logger->info('BMM not found', ['name' => $name, 'component' => $component]);
+        throw new ToolCallException("Type '$name' not found (in '$component' component).");
     }
 }

@@ -10,7 +10,7 @@ use Mcp\Capability\Attribute\McpPrompt;
 readonly final class TypeSpecificationExplorer
 {
     /**
-     * Guided workflow to discover and retrieve bundled openEHR type specifications (BMM JSON).
+     * Guided workflow to discover and retrieve bundled openEHR Type specifications (BMM JSON).
      *
      * @return array<array<string, string>>
      */
@@ -20,25 +20,28 @@ readonly final class TypeSpecificationExplorer
             [
                 'role' => 'assistant',
                 'content' =>
-                    'You help users discover and retrieve openEHR Type specifications.' . "\n"
-                    . 'These are BMM (Basic Meta-Model) JSON type (class) definitions from the openEHR specifications (from components like RM/AM/BASE)."
-                    . "The BMM definitions are alternative to the UMLs. They are not JSON Schema and not runtime EHR data examples.' . "\n\n"
+                    'You help users discover and retrieve openEHR Type (class) specifications.' . "\n"
+                    . 'These are BMM (Basic Meta-Model) JSON definitions, taken from the openEHR specifications (from components like RM/AM/BASE), often referred as the openEHR Reference Model."
+                    . "BMM definitions are alternative to the UMLs. They are not JSON Schema and not runtime EHR data examples.' . "\n\n"
                     . 'Rules:' . "\n"
                     . '- Use tools; do not invent type definitions, file paths, or fields.' . "\n"
                     . '- Prefer search → shortlist → user confirmation → retrieval → explanation.' . "\n"
-                    . '- If retrieval returns an error JSON payload (e.g., contains `"error": "not found"`), treat it as “not found” and recover by widening the search.' . "\n\n"
+                    . '- If retrieval returns an error recover by widening the search.' . "\n\n"
                     . 'Workflow:' . "\n"
-                    . '1) Call `type_specification_search` with a good `namePattern` (supports `*` wildcard). Examples: `COMPOSITION`, `*ENTRY*`, `DV_*`, `*CLUSTER*`.' . "\n"
-                    . '2) Optionally provide a `keyword` to filter results by raw JSON substring match. Note: the keyword filter can be overly strict (casing/wording), so retry without it if results are empty.' . "\n"
-                    . '3) Present a shortlist (5–10 max) including: `type`, `description`, `component`, `file`. Ask the user which result to open if ambiguous.' . "\n"
-                    . '4) Call `type_specification_get` to retrieve the definition. Prefer using the `file` value from search results for deterministic retrieval.' . "\n"
-                    . '5) Return the raw BMM JSON, then explain it for an implementer: purpose, key attributes and their types, inheritance/supertypes if present, and any constraints/invariants if present.' . "\n\n"
-                    . 'Tools available: `type_specification_search`, `type_specification_get`.',
+                    . '1) Call `type_specification_search` with a good `namePattern` (supports `*` wildcard). Examples: `COMPOSITION`, `*ENTRY*`, `DV_*`, `VERSION*`.' . "\n"
+                    . '2) Optionally provide a `keyword` to filter results by raw JSON substring match. Note: the keyword filter can be overly strict, so retry without it if results are empty.' . "\n"
+                    . '3) Present a shortlist (5–10 max) including: `name`, `documentation`, `component`, `package`. Ask the user which result to open if ambiguous.' . "\n"
+                    . '4) Call `type_specification_get` tool to retrieve the definition, or use the result `resourceUri` to read it from available server resources.' . "\n"
+                    . '5) If definition details are insufficient, retrieve fragment content at `specUrl` (from the search result) to get more context.' . "\n"
+                    . '6) Return the raw BMM JSON, then explain it for an implementer: purpose, key attributes and their types, inheritance/supertypes if present, and any constraints/invariants if present.' . "\n\n"
+                    . 'Tools available: `type_specification_search`, `type_specification_get`.' . "\n\n"
+                    . 'Resource template: `openehr://spec/type/{COMPONENT}/{TYPE}`.' . "\n\n"
+                    . 'Tone & Style: Clear, explanatory, normative, audience-appropriate.',
             ],
             [
                 'role' => 'user',
                 'content' =>
-                    'Help me find and retrieve an openEHR type definition (as BMM JSON). If multiple candidates match, show me a shortlist and ask which one to open. Then fetch it and explain the important parts.',
+                    'Help me find and retrieve an openEHR Type definition (specification). If multiple candidates match, show me a shortlist and ask which one to open. Then fetch it and explain the important parts.',
             ],
         ];
     }

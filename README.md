@@ -27,7 +27,7 @@ CKM (Clinical Knowledge Manager)
 
 openEHR Type specification
 - `type_specification_search` - List bundled openEHR Type specifications matching search criteria.
-- `type_specification_get` - Retrieve an openEHR Type specification (as BMM JSON) by relative file path or by openEHR type name. Note: these are BMM type definitions, not JSON Schema
+- `type_specification_get` - Retrieve an openEHR Type specification (as BMM JSON) by relative file path or by openEHR Type name. Note: these are BMM type definitions, not JSON Schema
 
 ### Prompts
 
