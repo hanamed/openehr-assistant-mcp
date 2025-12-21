@@ -8,9 +8,11 @@ use Cadasto\OpenEHR\MCP\Assistant\Apis\CkmClient;
 use GuzzleHttp\Client;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\Response;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 
+#[CoversClass(Client::class)]
 final class CkmClientTest extends TestCase
 {
     public function testRequestDelegatesToGuzzleClient(): void

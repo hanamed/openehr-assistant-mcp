@@ -8,10 +8,12 @@ use Cadasto\OpenEHR\MCP\Assistant\Apis\CkmClient;
 use Cadasto\OpenEHR\MCP\Assistant\Tools\CkmService;
 use GuzzleHttp\Psr7\Response;
 use Mcp\Schema\Content\TextContent;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Log\NullLogger;
 
+#[CoversClass(CkmService::class)]
 final class CkmServiceTest extends TestCase
 {
     private CkmClient $client;

@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Cadasto\OpenEHR\MCP\Assistant\Tests\Prompts;
 
 use Cadasto\OpenEHR\MCP\Assistant\Prompts\CkmArchetypeExplorer;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(CkmArchetypeExplorer::class)]
 final class CkmArchetypeExplorerTest extends TestCase
 {
     public function testPromptReturnsWellFormedMessagesAndReferencesTools(): void

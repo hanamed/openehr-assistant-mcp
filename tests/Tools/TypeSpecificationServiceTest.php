@@ -7,9 +7,11 @@ namespace Cadasto\OpenEHR\MCP\Assistant\Tests\Tools;
 use Cadasto\OpenEHR\MCP\Assistant\Tools\TypeSpecificationService;
 use Monolog\Handler\NullHandler;
 use Monolog\Logger;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Mcp\Schema\Content\TextContent;
 
+#[CoversClass(TypeSpecificationService::class)]
 final class TypeSpecificationServiceTest extends TestCase
 {
     private function makeLogger(): Logger

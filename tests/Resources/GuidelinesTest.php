@@ -6,8 +6,10 @@ namespace Cadasto\OpenEHR\MCP\Assistant\Tests\Resources;
 use Cadasto\OpenEHR\MCP\Assistant\Resources\Guidelines;
 use Mcp\Exception\ResourceReadException;
 use Mcp\Server\Builder;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(Guidelines::class)]
 final class GuidelinesTest extends TestCase
 {
     public function test_can_read_known_guideline_markdown(): void

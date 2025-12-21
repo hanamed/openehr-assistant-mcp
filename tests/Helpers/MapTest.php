@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Cadasto\OpenEHR\MCP\Assistant\Tests\Helpers;
 
 use Cadasto\OpenEHR\MCP\Assistant\Helpers\Map;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(Map::class)]
 final class MapTest extends TestCase
 {
     public function testContentTypeMappings(): void

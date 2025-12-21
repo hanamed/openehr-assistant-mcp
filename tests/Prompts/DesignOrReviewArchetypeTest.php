@@ -6,9 +6,11 @@ namespace Cadasto\OpenEHR\MCP\Assistant\Tests\Prompts;
 
 use Cadasto\OpenEHR\MCP\Assistant\Prompts\DesignOrReviewArchetype;
 use Mcp\Capability\Attribute\McpPrompt;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
+#[CoversClass(DesignOrReviewArchetype::class)]
 final class DesignOrReviewArchetypeTest extends TestCase
 {
     public function test_prompt_structure_placeholders_and_attribute(): void
