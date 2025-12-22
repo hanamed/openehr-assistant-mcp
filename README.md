@@ -16,6 +16,7 @@ A PHP 8.4 [Model Context Protocol (MCP) Server](https://modelcontextprotocol.io/
 - Structured logging with Monolog
 - Simple, environment-driven configuration
 - Built-in developer guidelines exposed as MCP Resources via `openehr://guidelines/{category}/{version}/{name}` URIs
+- MCP Resource templates and Completion Providers for better UX in MCP clients
 
 ## Available MCP Elements
 
@@ -27,28 +28,41 @@ CKM (Clinical Knowledge Manager)
 
 openEHR Type specification
 - `type_specification_search` - List bundled openEHR Type specifications matching search criteria.
-- `type_specification_get` - Retrieve an openEHR Type specification (as BMM JSON) by relative file path or by openEHR Type name. Note: these are BMM type definitions, not JSON Schema
+- `type_specification_get` - Retrieve an openEHR Type specification (as BMM JSON) by relative file path or by openEHR Type name.
 
 ### Prompts
 
 Optional prompts that guide AI assistants through common openEHR and CKM workflows using the tools above.
-- `ckm_archetype_explorer` - Explore CKM Archetypes by listing and fetching definitions (ADL/XML/Mindmap) by CID.
-- `type_specification_explorer` - Discover and fetch openEHR Type specifications (as BMM JSON) using type_specification_search and type_specification_get.
+- `ckm_archetype_explorer` - Explore CKM Archetypes by discovering and fetching definitions (ADL/XML/Mindmap), using `ckm_archetype_search` and `ckm_archetype_get` tools.
+- `type_specification_explorer` - Discover and fetch openEHR Type specifications (as BMM JSON) using `type_specification_search` and `type_specification_get` tools.
 - `explain_archetype_semantics` - Explain an archetype’s semantics (audiences, elements, constraints) with links to local guidelines.
 - `translate_archetype_language` - Translate an archetype’s terminology section between languages with safety checks.
-- `fix_adl_syntax` - Strictly correct ADL syntax without changing semantics; provides before/after and notes.
+- `fix_adl_syntax` - Correct or improve Archetype syntax without changing semantics; provides before/after and notes.
 - `design_or_review_archetype` - Guide a design or review task for a specific concept/RM class with structured outputs.
+
+### Completion Providers
+
+Completion providers supply parameter suggestions in MCP clients when invoking tools or resources.
+- `ArchetypeGuidelines` — suggests guideline `{name}` values from `resources/guidelines/archetypes/v1`
+- `SpecificationComponents` — suggests `{component}` values based on directories in `resources/bmm`
 
 ### Resources
 
-Guidelines (Markdown) are exposed as MCP Resources and can be fetched by MCP clients using `openehr://guidelines/` URIs.
+Resources are exposed via `#[McpResourceTemplate]` annotated methods and can be fetched by MCP clients using `openehr://...` URIs.
 
+Guidelines (Markdown)
 - URI template: `openehr://guidelines/{category}/{version}/{name}`
 - On-disk mapping: `resources/guidelines/{category}/{version}/{name}.md`
+- Examples:
+  - `openehr://guidelines/archetypes/v1/checklist`
+  - `openehr://guidelines/archetypes/v1/adl-syntax`
 
-Examples
-- `openehr://guidelines/archetypes/v1/checklist`
-- `openehr://guidelines/archetypes/v1/adl-syntax`
+Type Specifications (BMM JSON)
+- URI template: `openehr://spec/type/{component}/{name}`
+- On-disk mapping: `resources/bmm/{COMPONENT}/{NAME}.bmm.json`
+- Examples:
+  - `openehr://spec/type/RM/COMPOSITION`
+  - `openehr://spec/type/AM/ARCHETYPE`
 
 ## Transports
 
@@ -63,7 +77,8 @@ Prerequisites
 - Docker and Docker Compose
 - Git
 
->Note: Container images are published to GitHub Container Registry (GHCR) as `ghcr.io/cadasto/openehr-assistant-mcp:latest` (you can use this image name anywhere you would use the Docker image reference).
+>NOTE: A Docker image is regurly published to GitHub Container Registry (GHCR) as `ghcr.io/cadasto/openehr-assistant-mcp:latest`. 
+> Use this image name anywhere you see `cadasto/openehr-assistant-mcp:latest` in the examples below.
 
 1) Clone
 
@@ -134,15 +149,15 @@ Makefile shortcuts:
 - Install deps in dev container: `make install`
 - Tail logs: `make logs`
 - Open a shell in the dev container: `make sh`
-- Run MCP inspector: `make inspector
+- Run MCP inspector: `make inspector`
 - Make help: `make help`
 
 ## Environment Variables
 
-- `APP_ENV`: application environment (`development`/`production`). Default: `development`
+- `APP_ENV`: application environment (`development`/`testing`/`production`). Default: `production`
 - `LOG_LEVEL`: Monolog level (`debug`, `info`, `warning`, `error`, etc.). Default: `info`
 - `CKM_API_BASE_URL`: base URL for the openEHR CKM REST API. Default: `https://ckm.openehr.org/ckm/rest`
-- `HTTP_TIMEOUT`: HTTP client timeout in seconds (float). Default: `2.0`
+- `HTTP_TIMEOUT`: HTTP client timeout in seconds (float). Default: `3.0`
 - `HTTP_SSL_VERIFY`: set to `false` to disable verification or provide a CA bundle path. Default: `true`
 
 Note: Authorization headers are not required nor configured by default. If you need to add auth to your upstream openEHR/CKM server, extend the HTTP client in `src/Apis` to add the appropriate headers.
@@ -202,12 +217,15 @@ Tips
 - `src/`
   - `Tools/`: MCP Tools (Definition, EHR, Composition, Query)
   - `Prompts/`: MCP Prompts
+  - `Resources/`: MCP Resources and Resource Templates
+  - `CompletionProviders/`: MCP Completion Providers
   - `Helpers/`: Internal helpers (e.g., content type and ADL mapping)
   - `Apis/`: Internal API clients
   - `constants.php`: loads env and defaults
 - `docker-compose.yml`: services (`mcp`) for production-like run (Caddy on 443)
 - `docker-compose.dev.yml`: dev overrides for service (`mcp`) exposing port 8343 and mounting source
 - `Dockerfile`: multi-stage build (development, production)
+- `Makefile`: handy shortcuts
 - `resources/`: various resources used or exposed by the server
 - `tests/`: PHPUnit and PHPStan config and tests
 

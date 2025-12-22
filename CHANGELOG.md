@@ -9,7 +9,21 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 
 ## [Unreleased]
 
-- MCP Resources: changed `guidelines://{category}/{version}/{name}` to `openehr://guidelines/{category}/{version}/{name}/{language}`
+## [0.3.0] - 2025-12-22
+
+### Added
+
+- Documentation: Describe MCP Resource templates and Completion Providers now present in the codebase.
+  - MCP Resources (Guidelines): `openehr://guidelines/{category}/{version}/{name}`
+  - MCP Resources (Type Specifications): `openehr://spec/type/{component}/{name}`
+  - Completion Providers: `ArchetypeGuidelines` and `SpecificationComponents`
+- Added tests for MCP Resources and Completion Providers.
+
+### Changed
+
+- README and CONTRIBUTING updated to reflect current MCP Resources and Completion Providers.
+- Changed the resource URI scheme from `guidelines` to `openehr`.
+- improved openEHR type specification tool response and associated resources.
 
 ## [0.2.0] - 2025-12-16
 

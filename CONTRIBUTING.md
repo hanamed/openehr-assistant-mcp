@@ -13,7 +13,7 @@ This guide is self‑contained; you do not need to read `guidelines.md`. The mos
 - [Running the server (stdio and streamable HTTP)](#running-the-server-stdio-and-streamable-http)
 - [Running tests and coverage](#running-tests-and-coverage)
 - [Static analysis and code style](#static-analysis-and-code-style)
-- [MCP conventions (Tools and Prompts)](#mcp-conventions-tools-and-prompts)
+- [MCP conventions (Tools, Prompts, Resources, Completion Providers)](#mcp-conventions-tools-prompts-resources-completion-providers)
 - [Troubleshooting tips](#troubleshooting-tips)
 - [Commit messages and pull requests](#commit-messages-and-pull-requests)
 - [Branching, issues, and release notes](#branching-issues-and-release-notes)
@@ -113,14 +113,22 @@ docker compose -f docker-compose.yml -f docker-compose.dev.yml exec mcp vendor\b
 - Keep methods small; use typed signatures; add phpdoc where types aren’t obvious.
 
 
-## MCP conventions (Tools, Prompts, and Resources)
+## MCP conventions (Tools, Prompts, Resources, Completion Providers)
 - Tools live in `src\Tools`; annotate public methods with `#[McpTool(name: '...')]` for discovery by `modelcontextprotocol/php-sdk` in `public/index.php`.
 - Prompts live in `src\Prompts`; annotate prompt classes with `#[McpPrompt(name: '...')]`. Current prompt names include:
   - `ckm_archetype_explorer`, `type_specification_explorer`
   - `explain_archetype_semantics`, `translate_archetype_language`, `fix_adl_syntax`, `design_or_review_archetype`
-- Resources: developer guidelines are exposed as MCP Resources via `Guidelines` under `src\Resources`.
-  - URI template: `openehr://guidelines/{category}/{version}/{name}` (e.g., `openehr://guidelines/archetypes/v1/checklist`).
-  - Files map to `resources/guidelines/{category}/{version}/{name}.md`.
+- Resources & Resource Templates (attribute `#[McpResourceTemplate]`):
+  - Guidelines (markdown) via `Guidelines::read()` in `src\Resources\Guidelines.php`
+    - URI template: `openehr://guidelines/{category}/{version}/{name}` (e.g., `openehr://guidelines/archetypes/v1/checklist`).
+    - Files map to `resources/guidelines/{category}/{version}/{name}.md`.
+    - Discoverability: `Guidelines::addResources()` registers all guidelines as MCP resources at startup.
+  - Type Specifications (BMM JSON) via `TypeSpecifications::read()` in `src\Resources\TypeSpecifications.php`
+    - URI template: `openehr://spec/type/{component}/{name}` (e.g., `openehr://spec/type/RM/COMPOSITION`).
+    - Files map to `resources/bmm/{COMPONENT}/{NAME}.bmm.json`.
+- Completion Providers (attribute `#[CompletionProvider]`) live in `src\CompletionProviders` and provide parameter suggestions to tools/resources:
+  - `ArchetypeGuidelines`: suggests guideline names from `resources/guidelines/archetypes/v1` for the `{name}` segment of guideline URIs.
+  - `SpecificationComponents`: suggests available `{component}` values from `resources/bmm` for type specification URIs.
 - Constants and versioning live in `src\constants.php` (see `APP_VERSION`).
 
 
@@ -148,6 +156,7 @@ PR checklist:
 Testing notes
 - Prompt tests live under `tests/Prompts` and validate the `__invoke()` message shape and `#[McpPrompt]` attributes.
 - Guidelines resource tests live under `tests/Resources` and validate that `Guidelines::addResources()` registers `openehr://guidelines/...` resources and that `Guidelines::read()` loads known documents.
+- Completion provider tests live under `tests/CompletionProviders` and validate that providers return expected suggestions given repository contents.
 
 
 ## Branching, issues, and release notes
