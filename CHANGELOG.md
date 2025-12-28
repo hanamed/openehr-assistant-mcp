@@ -9,6 +9,13 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 
 ## [Unreleased]
 
+### Added
+
+- MCP Resources (Terminologies): `openehr://terminology/{type}/{id}` for openEHR terminology groups and codesets.
+- MCP Tool (Terminology Service): `terminology_resolve` to resolve openEHR concept IDs and rubrics.
+- MCP Prompt (Terminology Explorer): `terminology_explorer` to guide users through discovering openEHR terminologies.
+- Added tests for Terminologies resource, explorer prompt and terminology service tool.
+
 ## [0.3.0] - 2025-12-22
 
 ### Added

@@ -26,6 +26,9 @@ CKM (Clinical Knowledge Manager)
 - `ckm_archetype_search` - List Archetypes from the CKM server matching search criteria
 - `ckm_archetype_get` - Get a CKM Archetype by its identifier
 
+openEHR Terminology
+- `terminology_resolve` - Resolve an openEHR terminology concept ID to its rubric, or find the ID for a given rubric.
+
 openEHR Type specification
 - `type_specification_search` - List bundled openEHR Type specifications matching search criteria.
 - `type_specification_get` - Retrieve an openEHR Type specification (as BMM JSON) by relative file path or by openEHR Type name.
@@ -35,6 +38,7 @@ openEHR Type specification
 Optional prompts that guide AI assistants through common openEHR and CKM workflows using the tools above.
 - `ckm_archetype_explorer` - Explore CKM Archetypes by discovering and fetching definitions (ADL/XML/Mindmap), using `ckm_archetype_search` and `ckm_archetype_get` tools.
 - `type_specification_explorer` - Discover and fetch openEHR Type specifications (as BMM JSON) using `type_specification_search` and `type_specification_get` tools.
+- `terminology_explorer` - Discover and retrieve openEHR terminology definitions (groups and codesets) using terminology resources.
 - `explain_archetype_semantics` - Explain an archetype’s semantics (audiences, elements, constraints) with links to local guidelines.
 - `translate_archetype_language` - Translate an archetype’s terminology section between languages with safety checks.
 - `fix_adl_syntax` - Correct or improve Archetype syntax without changing semantics; provides before/after and notes.
@@ -63,6 +67,13 @@ Type Specifications (BMM JSON)
 - Examples:
   - `openehr://spec/type/RM/COMPOSITION`
   - `openehr://spec/type/AM/ARCHETYPE`
+
+Terminologies (JSON)
+- URI template: `openehr://terminology/{type}/{id}`
+- On-disk mapping: `resources/terminology/openehr_terminology.xml`
+- Examples:
+  - `openehr://terminology/group/attestation_reason`
+  - `openehr://terminology/codeset/compression_algorithms`
 
 ## Transports
 

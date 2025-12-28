@@ -13,6 +13,7 @@
         "php": "^8.4",
         "ext-curl": "*",
         "ext-json": "*",
+        "ext-simplexml": "*",
         "guzzlehttp/guzzle": "^7.9",
         "mcp/sdk": "^0.2.0",
         "monolog/monolog": "^3.9",

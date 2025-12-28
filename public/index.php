@@ -6,6 +6,7 @@ require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 use Cadasto\OpenEHR\MCP\Assistant\Apis\CkmClient;
 use Cadasto\OpenEHR\MCP\Assistant\Resources\Guidelines;
+use Cadasto\OpenEHR\MCP\Assistant\Resources\Terminologies;
 use Mcp\Capability\Registry\Container;
 use Mcp\Schema\Enum\ProtocolVersion;
 use Mcp\Server;
@@ -55,6 +56,7 @@ try {
     // Initialize API clients, resources, etc.
     $container->set(CkmClient::class, new CkmClient($logger));
     $container->set(Guidelines::class, new Guidelines());
+    $container->set(Terminologies::class, new Terminologies());
 
     // Build the server
     $builder = Server::builder()
@@ -66,6 +68,7 @@ try {
         ->setLogger($logger);
     // add resources
     Guidelines::addResources($builder);
+    Terminologies::addResources($builder);
 
     $server = $builder->build();
 
