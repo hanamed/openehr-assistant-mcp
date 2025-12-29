@@ -13,7 +13,7 @@ readonly final class Map
             'web template', 'application/openehr.wt+json' => 'application/openehr.wt+json',
             'flat', 'application/openehr.wt.flat.schema+json' => 'application/openehr.wt.flat.schema+json',
             'structured', 'application/openehr.wt.structured.schema+json' => 'application/openehr.wt.structured.schema+json',
-            'xml', 'canonical', 'opt', 'mindmap', 'application/xml' => 'application/xml',
+            'xml', 'canonical', 'opt', 'oet', 'mindmap', 'application/xml' => 'application/xml',
             'adl', 'adl2', 'text', 'aql', 'text/plain' => 'text/plain',
             default => throw new \InvalidArgumentException("Invalid format: {$format}"),
         };
@@ -35,5 +35,14 @@ readonly final class Map
             throw new \InvalidArgumentException("Invalid archetype format: {$format}");
         }
         return $archetypeFormat;
+    }
+
+    public static function templateFormat(string $format): string
+    {
+        $templateFormat = strtolower($format);
+        if (!in_array($templateFormat, ['opt', 'oet'])) {
+            throw new \InvalidArgumentException("Invalid template format: {$format}");
+        }
+        return $templateFormat;
     }
 }

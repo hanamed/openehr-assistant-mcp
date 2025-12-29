@@ -91,4 +91,49 @@ final class CkmServiceTest extends TestCase
         $this->expectException(\RuntimeException::class);
         $svc->archetypeSearch('x');
     }
+
+    public function testTemplateSearchSendsQueryAndDecodesJson(): void
+    {
+        $payload = [
+            ['id' => 'vital'],
+        ];
+
+        $this->client
+            ->expects($this->once())
+            ->method('get')
+            ->with(
+                'v1/templates',
+                $this->callback(function (array $opts): bool {
+                    $q = $opts['query'] ?? [];
+                    $headers = $opts['headers'] ?? [];
+                    return ($q['search-text'] ?? null) === 'vital' && ($q['restrict-search-to-main-data'] ?? null) === 'true'
+                        && ($headers['Accept'] ?? null) === 'application/json';
+                })
+            )
+            ->willReturn(new Response(200, ['Content-Type' => 'application/json'], json_encode($payload, JSON_THROW_ON_ERROR)));
+
+        $svc = new CkmService($this->client, $this->logger);
+        $result = $svc->templateSearch('vital');
+        $this->assertSame($payload, $result);
+    }
+
+    public function testTemplateGetRespectsFormatAndReturnsTextContent(): void
+    {
+        $this->client
+            ->expects($this->once())
+            ->method('get')
+            ->with(
+                'v1/templates/my_template/opt',
+                $this->callback(function (array $opts): bool {
+                    return ($opts['headers']['Accept'] ?? null) === 'application/xml';
+                })
+            )
+            ->willReturn(new Response(200, ['Content-Type' => 'application/xml'], '<opt>content</opt>'));
+
+        $svc = new CkmService($this->client, $this->logger);
+        $content = $svc->templateGet('my_template', 'opt');
+        $this->assertInstanceOf(TextContent::class, $content);
+        $this->assertStringContainsString('<opt>content</opt>', $content->text);
+        $this->assertStringContainsString('```', $content->text);
+    }
 }
