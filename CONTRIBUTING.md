@@ -102,7 +102,7 @@ final class SmokeTest extends TestCase
 ```
 
 To run a single test class:
-```powershell
+```bash
 docker compose -f docker-compose.yml -f docker-compose.dev.yml exec mcp vendor\bin\phpunit --filter SmokeTest
 ```
 
@@ -117,7 +117,7 @@ docker compose -f docker-compose.yml -f docker-compose.dev.yml exec mcp vendor\b
 - Tools live in `src\Tools`; annotate public methods with `#[McpTool(name: '...')]` for discovery by `modelcontextprotocol/php-sdk` in `public/index.php`.
 - Prompts live in `src\Prompts`; annotate prompt classes with `#[McpPrompt(name: '...')]`. Current prompt names include:
   - `ckm_archetype_explorer`, `ckm_template_explorer`, `type_specification_explorer`, `terminology_explorer`
-  - `explain_archetype_semantics`, `translate_archetype_language`, `fix_adl_syntax`, `design_or_review_archetype`
+  - `explain_archetype`, `explain_template`, `translate_archetype_language`, `fix_adl_syntax`, `design_or_review_archetype`, `design_or_review_template`
 - Resources & Resource Templates (attribute `#[McpResourceTemplate]`):
   - Guides (markdown) via `Guides::read()` in `src\Resources\Guides.php`
     - URI template: `openehr://guides/{category}/{name}` (e.g., `openehr://guides/archetypes/checklist`).

@@ -1,22 +1,33 @@
-# The openEHR Assistant MCP Server (PHP)
+# The openEHR Assistant MCP Server
 
-A PHP 8.4 [Model Context Protocol (MCP) Server](https://modelcontextprotocol.io/docs/getting-started/intro) to assist end-user on various openEHR related tasks and APIs.
+The MCP Server to assist end-user on various [openEHR](https://openehr.org/) related tasks and APIs.
+
+The [Model Context Protocol (MCP)](https://modelcontextprotocol.io/docs/getting-started/intro) is an open standard that enables AI assistants to connect to external data sources and tools in a secure and standardized way. MCP servers act as bridges between AI clients (like Claude Desktop, Cursor, or LibreChat) and domain-specific APIs, databases, or knowledge bases. 
+
+The **openEHR Assistant MCP Server** brings this power to the healthcare informatics domain, specifically targeting openEHR modelers and developers. 
+Working with openEHR archetypes, templates, and specifications often involves navigating complex APIs, searching through [Clinical Knowledge Manager (CKM)](https://ckm.openehr.org/) repositories, understanding [intricate type systems](https://specifications.openehr.org/), and ensuring compliance with ADL syntax rules. 
+Many of these workflows, such as archetype design, template composition, terminology resolution, and syntax validation, are repetitive, time-consuming, and sometimes too complex to automate. 
+
+This server augments these workflows by providing AI assistants with direct access to openEHR resources, terminology services, and CKM APIs, enabling them to assist with tasks like archetype exploration, semantic explanation, language translation, syntax correction, and design reviews. 
+
+> NOTE:
+> This project is currently in a pre-release state. Expect frequent updates and potential breaking changes to the architecture and feature set until version 1.0.
+
+## Features
 
 - Works with MCP clients such as Claude Desktop, Cursor, LibreChat or other clients that support MCP
 - Exposes tools for openEHR Archetypes and specifications
 - Optional guided Prompts help orchestrate multi-step workflows
 
-## Features
+### Implementation aspects 
 
-- PHP 8.4; PSR-compliant codebase
+- Made with PHP 8.4; PSR-compliant codebase
 - Attribute-based MCP tool discovery (via https://github.com/mcp/sdk)
 - Attribute-based MCP prompt discovery (seeded conversations for complex tasks)
-- Docker images for production and development
-- Transports: streamable HTTP and stdio (for development)
-- Structured logging with Monolog
-- Simple, environment-driven configuration
-- Built-in developer guidelines exposed as MCP Resources via `openehr://guides/{category}/{name}` URIs
 - MCP Resource templates and Completion Providers for better UX in MCP clients
+- Transports: streamable HTTP and stdio (for development)
+- Docker images for production and development
+- Structured logging with Monolog
 
 ## Available MCP Elements
 
@@ -33,7 +44,7 @@ openEHR Terminology
 
 openEHR Type specification
 - `type_specification_search` - List bundled openEHR Type specifications matching search criteria.
-- `type_specification_get` - Retrieve an openEHR Type specification (as BMM JSON) by relative file path or by openEHR Type name.
+- `type_specification_get` - Retrieve an openEHR Type specification (as BMM JSON).
 
 ### Prompts
 
@@ -42,10 +53,12 @@ Optional prompts that guide AI assistants through common openEHR and CKM workflo
 - `ckm_template_explorer` - Explore CKM Templates by discovering and fetching definitions (OET/OPT), using `ckm_template_search` and `ckm_template_get` tools.
 - `type_specification_explorer` - Discover and fetch openEHR Type specifications (as BMM JSON) using `type_specification_search` and `type_specification_get` tools.
 - `terminology_explorer` - Discover and retrieve openEHR terminology definitions (groups and codesets) using terminology resources.
-- `explain_archetype_semantics` - Explain an archetype’s semantics (audiences, elements, constraints).
+- `explain_archetype` - Explain an archetype’s semantics (audiences, elements, constraints).
+- `explain_template` - Explain openEHR Template semantics.
 - `translate_archetype_language` - Translate an archetype’s terminology section between languages with safety checks.
 - `fix_adl_syntax` - Correct or improve Archetype syntax without changing semantics; provides before/after and notes.
-- `design_or_review_archetype` - Guide a design or review task for a specific concept/RM class with structured outputs.
+- `design_or_review_archetype` - Design or review task for a specific concept/RM class with structured outputs.
+- `design_or_review_template` - Design or review task for an openEHR Template (OET).
 
 ### Completion Providers
 
@@ -55,7 +68,7 @@ Completion providers supply parameter suggestions in MCP clients when invoking t
 
 ### Resources
 
-Resources are exposed via `#[McpResourceTemplate]` annotated methods and can be fetched by MCP clients using `openehr://...` URIs.
+MCP Server Resources are exposed via `#[McpResource]` annotated methods and can be fetched by MCP clients using `openehr://...` URIs. They are used most of the time in the prompts above, to inject data or instructions into the conversation.
 
 Guides (Markdown)
 - URI template: `openehr://guides/{category}/{name}`
@@ -81,14 +94,19 @@ Terminologies (JSON)
 
 ## Transports
 
-- `stdio`: Suitable for process-based MCP clients
-- `streamable-http` (default): HTTPS (port 443) or HTTP server on port `8343` on the dev container.
+MCP Transports are used to communicate with MCP clients. 
 
-Start option: pass `--transport=stdio` or `--transport=streamable-http` to `public/index.php`; if `--transport` is skipped, the default is `streamable-http`.
+- `streamable-http` (default): HTTPS (port 443); dev container exposes and additional HTTP port `8343`.
+- `stdio`: Suitable for process-based MCP clients, or for local development. 
+  - Start option: pass `--transport=stdio` to `public/index.php`.
 
-## Quick Start with Docker
+---
 
-Prerequisites
+## Quick Start
+
+To run the MCP server locally, the easiest way is to use Docker. Depending on the use case, this can be either a production or development setup.
+
+Prerequisites:
 - Docker and Docker Compose
 - Git
 
@@ -102,65 +120,81 @@ git clone https://github.com/cadasto/openehr-assistant-mcp.git
 cd openehr-assistant-mcp
 ```
 
-2) Run the MCP server (production image)
+2) Run the MCP server (production)
 
 ```bash
-# optionally create .env file
+# optionally create .env file, edit it as needed
 cp .env.example .env
-# Edit .env as needed (see variables below)
+# build the image locally and start the server
 docker compose up -d mcp --build
+# or,
+make up
 ```
 
-The server listens by default at https://openehr-assistant-mcp.local (on port `443`) using the streamable HTTP transport, served by Caddy inside the container.
-You can change the domain suffix by setting the `DOMAIN` variable (defaults to `local`).
+The server listens by default at https://openehr-assistant-mcp.local (on port `443`) using the streamable HTTP transport, served by [Caddy webserver](https://caddyserver.com/) inside the container.
 
-## Development
+The domain suffix is `local` by default, but can be changed in the `.env` file; set the `DOMAIN` variable to the desired domain suffix.
 
-Prerequisites
-- Docker and Docker Compose
+### Development
+
+For local development, changing provided tools, prompts, etc., the easiest way is to use the dev container, provided by `docker-compose.dev.yml` (overrides). This will volume mount the codebase inside the container, as well as will expose port `8343`.
 
 1) Start dev container
 
 ```bash
 docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d mcp --build --force-recreate
+# or,
+make up-dev
 ```
 
-2) Configure environment
+2) Install dependencies (composer)
 
+Assuming you are running the dev container, and your local user ID is `1000`,
 ```bash
-cp .env.example .env
-# Edit .env as needed (see variables below)
+docker compose -f docker-compose.yml -f docker-compose.dev.yml exec -u 1000:1000 mcp composer install
+# or,
+make install
 ```
 
-3) Install dependencies (composer vendor directory is volume mounted)
-
-```bash
-docker compose -f docker-compose.yml -f docker-compose.dev.yml exec mcp composer install
-```
-
-4) Use the MCP server
+3) Use the MCP server
 Use the streamable HTTP transport with http://openehr-assistant-mcp.local:8343/ address in your MCP client.
-> Note: The dev container is configured to expose port 8343 on the host.
-> The codebase is volume-mounted inside the container. 
 
-Alternatively, run the MCP server as stdio:
+### Run the MCP server with stdio transport
+
+If you want to run the MCP server locally for development purposes, sometimes it is easier to use the stdio transport.
+
+Command to run the MCP server as stdio:
 ```bash
 docker compose -f docker-compose.yml -f docker-compose.dev.yml exec mcp php public/index.php --transport=stdio
 ```
-or, in case the MCP client does not have direct access to the docker compose project, but the image is already built (use `make build` to build the image):
+
+If the MCP client does not have direct access to the docker compose project, first build the image with `make build`, then use `docker run` with the stdio transport:
 ```bash
 docker run --rm -i cadasto/openehr-assistant-mcp:latest php public/index.php --transport=stdio
 ```
 
-or alternatively, in case the MCP client does not have direct access to the docker compose project, but the image is already built (use `make build` to build the image):
+or alternatively, use the latest github container registry image directly (no need to build the image):
 ```bash
-docker run --rm -i cadasto/openehr-assistant-mcp:latest php public/index.php --transport=stdio
+docker run --rm -i ghcr.io/cadasto/openehr-assistant-mcp:latest php public/index.php --transport=stdio
 ```
 
-Makefile shortcuts:
-- Start services: `make up` (prod) or `make up-dev` (dev override with live mounts)
+### MCP inspector
+
+The MCP inspector is a handy tool to inspect the MCP server responses and debug issues.
+It provides a simple web interface to inspect server responses and send requests to the server.
+
+>NOTE: This tools works best if the MCP server is up and running as the dev container.
+
+To run the inspector, use `make inspector` and follow the instructions in the terminal. 
+
+>NOTE: The url of the inspector is printed in the terminal as http://0.0.0.0:6274/, but in reality it should be accessed with an exact IP or host name, for example, at http://localhost:6274/.
+
+
+### Makefile shortcuts:
+ 
 - Build images: `make build` (prod) or `make build-dev` (dev)
-- Prepare `.env`: `make env`
+- Start services: `make up` (prod) or `make up-dev` (dev override with live volume mounts)
+- Prepare `.env` (make a copy from example): `make env`
 - Install deps in dev container: `make install`
 - Tail logs: `make logs`
 - Open a shell in the dev container: `make sh`
@@ -177,7 +211,7 @@ Makefile shortcuts:
 
 Note: Authorization headers are not required nor configured by default. If you need to add auth to your upstream openEHR/CKM server, extend the HTTP client in `src/Apis` to add the appropriate headers.
 
-## Integrations (Claude Desktop and LibreChat)
+## MCP Client Integrations 
 
 ### Claude Desktop mcpServers example
 
@@ -189,14 +223,14 @@ Example for local development (use Docker)
       "command": "docker",
       "args": [
         "run", "-i", "--rm", 
-        "cadasto/openehr-assistant-mcp:latest",
+        "ghcr.io/cadasto/openehr-assistant-mcp:latest",
         "php", "public/index.php", "--transport=stdio"
       ]
     }, 
     "openehr-assistant-mcp-8343": {
       "type": "streamable-http",
       "url": "http://host.docker.internal:8343/",
-      "note": "Dev running container port 8343"
+      "note": "Assumes the dev container is running and port 8343 mapped to host"
     }
   }
 }
@@ -229,6 +263,7 @@ Tips
 ## Project Structure
 
 - `public/index.php`: MCP server entry point
+- `resources/`: various resources used or exposed by the server
 - `src/`
   - `Tools/`: MCP Tools (Definition, EHR, Composition, Query)
   - `Prompts/`: MCP Prompts
@@ -238,10 +273,9 @@ Tips
   - `Apis/`: Internal API clients
   - `constants.php`: loads env and defaults
 - `docker-compose.yml`: services (`mcp`) for production-like run (Caddy on 443)
-- `docker-compose.dev.yml`: dev overrides for service (`mcp`) exposing port 8343 and mounting source
+- `docker-compose.dev.yml`: dev overrides for service (`mcp`) exposing port 8343 and volume mounting source
 - `Dockerfile`: multi-stage build (development, production)
 - `Makefile`: handy shortcuts
-- `resources/`: various resources used or exposed by the server
 - `tests/`: PHPUnit and PHPStan config and tests
 
 ## Acknowledgments
