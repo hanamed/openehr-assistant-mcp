@@ -10,7 +10,7 @@ use Mcp\Capability\Attribute\McpPrompt;
 readonly final class TranslateArchetypeLanguage
 {
     /**
-     * Translate openEHR Archetype Language (Terminology Only)
+     * Translate openEHR Archetype (Terminology Only) to a new language.
      *
      * @return array<array<string,string>>
      */

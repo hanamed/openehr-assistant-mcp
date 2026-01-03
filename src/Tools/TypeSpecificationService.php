@@ -65,16 +65,12 @@ readonly final class TypeSpecificationService
     }
 
     /**
-     * Search openEHR Type specifications (as BMM JSON) by type's name pattern, optionally filtered by a keyword.
+     * Search openEHR Type specifications by a type name-pattern, optionally filtered by a keyword.
      *
      * This tool is designed for LLM workflows that need to:
      * - discover the canonical definition of an openEHR Type (class),
      * - locate the exact type specification server resource uri,
      * - or fetch the full definition via the `type_specification_get` tool.
-     *
-     * Matching behaviour (important for predictable client usage):
-     * - `namePattern` minimal 3 chars, supports a simple `*` wildcard (glob-like).
-     * - `keyword` filtering is a plain substring check against the raw JSON contents.
      *
      * Returned fields (per result):
      * - `name`: the openEHR Type name (e.g. `DV_QUANTITY`)
@@ -85,7 +81,7 @@ readonly final class TypeSpecificationService
      * - `specUrl`: link to the corresponding openEHR specification page and fragment with more narrative details
      *
      * @param string $namePattern
-     *   A type-name pattern. Examples:
+     *   A type-name pattern. Matching behaviour: minimal 3 chars, supports a simple `*` wildcard (glob-like). Examples:
      *   - `ARCHETYPE_SLOT` (exact)
      *   - `ARCHETYPE_SL*` (wildcard prefix)
      *   - `DV_*` (family search)
@@ -139,7 +135,7 @@ readonly final class TypeSpecificationService
     }
 
     /**
-     * Retrieve one openEHR Type specification as BMM JSON.
+     * Retrieve the full specification of an openEHR Type (as BMM JSON).
      *
      * Use this tool when you need to retrieve the full, machine-readable BMM definition for a type so an LLM can:
      * - inspect properties/attributes and their declared types,
@@ -147,13 +143,8 @@ readonly final class TypeSpecificationService
      * - reason about constraints and semantics encoded in the BMM model,
      * - or generate client code / mappings based on the canonical model definition.
      *
-     * Do not use this tool to discover candidate types, use `type_specification_search` for that.
-     *
-     * Error handling:
-     * - If nothing matches, returns an exception.
-     *
      * @param string $name
-     *   The openEHR Type name (e.g. `DV_QUANTITY`)
+     *   The openEHR Type name (e.g. `DV_QUANTITY`, `COMPOSITION`, etc.)
      *
      * @param string $component
      *   Optional, the openEHR Component name (e.g. `RM`, `AM`, `BASE`, etc.), for better matching or filtering.

@@ -10,10 +10,7 @@ use Mcp\Capability\Attribute\McpPrompt;
 readonly final class ExplainTemplate
 {
     /**
-     * Explain openEHR Template Semantics.
-     *
-     * The prompt asks the model to interpret and explain the semantic meaning of a Template without proposing changes, grounded in the bundled guides.
-     * Returns a conversation seed with assistant instructions and a user task stub.
+     * Explain and interpret the semantic meaning of an openEHR Template, grounded in the bundled guides.
      *
      * @return array<array<string,string>>
      */
@@ -48,7 +45,7 @@ readonly final class ExplainTemplate
                     . '4) Data & Terminology Semantics: interpretation of coded elements, units, and clinical ranges.' . "\n"
                     . '5) UI & Implementation Hints: explanation of annotations, labels, and presentation-related constraints.' . "\n"
                     . '6) Summary (one paragraph) suitable for implementation documentation.' . "\n\n"
-                    . 'Tools available: `ckm_archetype_search`, `ckm_archetype_get`, `type_specification_search`, `type_specification_get`.' . "\n\n"
+                    . 'Tools available: `ckm_archetype_search`, `ckm_archetype_get`, `ckm_template_get`, `type_specification_get`.' . "\n\n"
                     . 'Tone & Style: Clear, explanatory, non-normative, implementation-aware.'
             ],
             [

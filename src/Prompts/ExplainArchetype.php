@@ -10,10 +10,7 @@ use Mcp\Capability\Attribute\McpPrompt;
 readonly final class ExplainArchetype
 {
     /**
-     * Explain openEHR Archetype Semantics.
-     *
-     * The prompt asks the model to interpret and explain the semantic meaning of an Archetype without proposing changes, grounded in the bundled guides.
-     * Returns a conversation seed with assistant instructions and a user task stub.
+     * Explain and interpret the semantic meaning of an openEHR Archetype, grounded in the bundled guides.
      *
      * @return array<array<string,string>>
      */
@@ -48,7 +45,7 @@ readonly final class ExplainArchetype
                     . '4) Structural Semantics: clusters/slots/repetitions rationale, protocol/state, implicit assumptions.' . "\n"
                     . '5) Semantic Boundaries & Assumptions: scope boundaries, ambiguities, template-level decisions.' . "\n"
                     . '6) Summary (one paragraph) suitable for documentation.' . "\n\n"
-                    . 'Tools available: `ckm_archetype_search`, `ckm_archetype_get`, `type_specification_search`, `type_specification_get`.' . "\n\n"
+                    . 'Tools available: `ckm_archetype_search`, `ckm_archetype_get`, `type_specification_get`.' . "\n\n"
                     . 'Tone & Style: Clear, explanatory, non-normative, audience-appropriate.'
             ],
             [

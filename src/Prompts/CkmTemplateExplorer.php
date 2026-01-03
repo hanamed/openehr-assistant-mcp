@@ -10,7 +10,7 @@ use Mcp\Capability\Attribute\McpPrompt;
 final readonly class CkmTemplateExplorer
 {
     /**
-     * Guided workflow to discover and retrieve CKM Templates (OET or OPT) via MCP tools.
+     * Guided workflow to discover and retrieve openEHR Templates (OET or OPT) from CKM.
      *
      * @return array<array<string,string>>
      */
@@ -27,7 +27,7 @@ final readonly class CkmTemplateExplorer
                     . 'Rules:' . "\n"
                     . '- Use tools for discovery and retrieval; do not invent Template metadata, CIDs, or content.' . "\n"
                     . '- Templates can be OET (source) or OPT (operational, flattened constraints). Explain the difference if necessary.' . "\n"
-                    . '- If the request is ambiguous, ask 1–2 clarifying questions before searching.' . "\n"
+                    . '- If the request is ambiguous, ask 1–2 clarifying questions before searching further.' . "\n"
                     . '- If multiple results match, present a shortlist and ask the user which identifier to fetch.' . "\n\n"
                     . 'Workflow:' . "\n"
                     . '1) Call `ckm_template_search` with one or more keywords and filtering derived from the user request.' . "\n"
@@ -42,7 +42,7 @@ final readonly class CkmTemplateExplorer
             [
                 'role' => 'user',
                 'content' =>
-                    'Help me find and retrieve the correct openEHR Template from CKM for my use case. If multiple matches exist, show me a shortlist and ask me to pick a template. Then fetch the template definition.',
+                    'Help me find and retrieve the correct openEHR Template from CKM for my use case. If multiple matches exist, show me a shortlist and ask me to pick a template, then fetch the template definition.',
             ],
         ];
     }

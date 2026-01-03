@@ -22,7 +22,7 @@ final readonly class CkmService
     }
 
     /**
-     * Search openEHR Archetypes in the Clinical Knowledge Manager (CKM).
+     * Search for openEHR Archetypes in the Clinical Knowledge Manager (CKM).
      *
      * Use this tool when you need to *discover* candidate archetypes before fetching full definitions.
      * It is typically the first step in an LLM workflow:
@@ -96,11 +96,6 @@ final readonly class CkmService
      * - generate templates or implementation guidance,
      * - or cite the definition content in downstream reasoning.
      *
-     * Returned content and formats:
-     * - "adl": ADL source text (best for detailed archetype semantics and constraints)
-     * - "xml": XML representation (similar to "adl", but helpful when consuming via XML tooling)
-     * - "mindmap": mindmap form (useful for quick visual overview)
-     *
      * Implementation detail (relevant to clients):
      * - For best results, pass the CID exactly as returned by `ckm_archetype_search` tool.
      *
@@ -112,7 +107,11 @@ final readonly class CkmService
      *   Defaults to "adl".
      *
      * @return TextContent
-     *   The archetype definition code block as MCP text content in the chosen format.
+     *   The Archetype definition code block as MCP text content in the chosen format.
+     *   Returned content and formats:
+     *     - "adl": ADL source text (best for detailed archetype semantics and constraints)
+     *     - "xml": XML representation (similar to "adl", but helpful when consuming via XML tooling)
+     *     - "mindmap": mindmap form (useful for quick visual overview)
      *
      * @throws \RuntimeException
      *   If the CKM API request fails (invalid CID, unsupported format mapping, upstream error).
@@ -153,16 +152,15 @@ final readonly class CkmService
     }
 
     /**
-     * Search openEHR Templates in the Clinical Knowledge Manager (CKM).
+     * Search for openEHR Templates in the Clinical Knowledge Manager (CKM).
      *
-     * Use this tool when you need to *discover* candidate templates (OET or OPT) before fetching full definitions.
+     * Use this tool when you need to *discover* candidate openEHR Templates (OET or OPT) before fetching their full definitions.
      * It is typically the first step in an LLM workflow:
-     * 1) Search by a domain keyword (e.g. "vital signs", "discharge summary")
+     * 1) Search by one or more domain keywords (e.g. "vital signs", "discharge summary")
      * 2) Inspect the returned metadata for plausible matches
      * 3) Take the returned CKM identifier (CID) and call `ckm_template_get` tool to retrieve the content.
      *
      * Important notes for MCP/LLM clients:
-     * - This tool performs a keyword search on CKM "main data" of Templates.
      * - If you need deterministic fields for downstream reasoning,
      *      treat this as a discovery step and rely on the `ckm_template_get` tool for authoritative content.
      *
@@ -214,13 +212,12 @@ final readonly class CkmService
     }
 
     /**
-     * Retrieve the definition of an identified CKM Template, serialized in a specific format.
+     * Retrieve from CKM the definition of an identified openEHR Template, serialized in a specific format.
      *
-     * Use this tool after you have identified a candidate template (usually from the `ckm_template_search` tool).
-     *
+     * Use this tool to *retrieve* an openEHR Template from CKM after you have identified a candidate template (usually from the `ckm_template_search` tool).
      * Returned content and formats:
-     * - "oet": Template source (XML) - the unflattened version.
-     * - "opt": Operational Template (XML) - the flattened version of the template.
+     * - "oet": Template source (XML) - the unflattened version (design-time template).
+     * - "opt": Operational Template (XML) - the flattened version of the Template, containing all archetype constraints.
      *
      * @param string $identifier
      *   CID identifier (e.g. "1013.26.244").
@@ -230,7 +227,7 @@ final readonly class CkmService
      *   Defaults to "oet".
      *
      * @return TextContent
-     *   The template definition content.
+     *   The Template definition code block as MCP text content in the chosen format.
      *
      * @throws \RuntimeException
      *   If the CKM API request fails.

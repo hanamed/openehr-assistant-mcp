@@ -10,9 +10,7 @@ use Mcp\Capability\Attribute\McpPrompt;
 readonly final class DesignOrReviewArchetype
 {
     /**
-     * Design or Review openEHR Archetype.
-     *
-     * Implements the structured design/review Archetype workflow.
+     * Design or Review an openEHR Archetype, based on the provided inputs and guides.
      *
      * @return array<array<string,string>>
      */
