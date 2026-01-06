@@ -8,8 +8,8 @@ FROM php:${PHP_VERSION}-fpm-alpine AS base
 RUN set -eux \
     && apk update && apk upgrade --no-cache \
     && apk add --no-cache \
-      curl \
-    && curl --etag-compare etag.txt --etag-save etag.txt --remote-name https://curl.se/ca/cacert.pem \
+      ca-certificates \
+    && update-ca-certificates \
     && mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 # Add production PHP INI overlays (keep extension configs clean in docker/php)
 COPY docker/php/opcache.ini /usr/local/etc/php/conf.d/
