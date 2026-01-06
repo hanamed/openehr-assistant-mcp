@@ -96,7 +96,7 @@ Terminologies (JSON)
 
 MCP Transports are used to communicate with MCP clients. 
 
-- `streamable-http` (default): HTTPS (port 443); dev container exposes and additional HTTP port `8343`.
+- `streamable-http` (default): HTTPS (port 443); dev setup exposes an additional HTTP port `8343` via Caddy.
 - `stdio`: Suitable for process-based MCP clients, or for local development. 
   - Start option: pass `--transport=stdio` to `public/index.php`.
 
@@ -104,14 +104,16 @@ MCP Transports are used to communicate with MCP clients.
 
 ## Quick Start
 
+To run the MCP server remotely, configure your MCP client to use our server published at https://openehr-assistant-mcp.apps.cadasto.com/, as streamable HTTP transport. 
+
 To run the MCP server locally, the easiest way is to use Docker. Depending on the use case, this can be either a production or development setup.
 
 Prerequisites:
 - Docker and Docker Compose
 - Git
 
->NOTE: A Docker image is regurly published to GitHub Container Registry (GHCR) as `ghcr.io/cadasto/openehr-assistant-mcp:latest`. 
-> Use this image name anywhere you see `cadasto/openehr-assistant-mcp:latest` in the examples below.
+>NOTE: A pre-built Docker image is available on the GitHub Container Registry (GHCR) at `ghcr.io/cadasto/openehr-assistant-mcp:latest`. 
+> You can use this image as a drop-in replacement for cadasto/openehr-assistant-mcp:latest in any of the stdio transport examples below.
 
 1) Clone
 
@@ -125,24 +127,24 @@ cd openehr-assistant-mcp
 ```bash
 # optionally create .env file, edit it as needed
 cp .env.example .env
-# build the image locally and start the server
-docker compose up -d mcp --build
+# build the images locally and start the server
+docker compose up -d --build
 # or,
 make up
 ```
 
-The server listens by default at https://openehr-assistant-mcp.local (on port `443`) using the streamable HTTP transport, served by [Caddy webserver](https://caddyserver.com/) inside the container.
+The server listens by default at https://openehr-assistant-mcp.local (on port `443`) using the streamable HTTP transport, served by a separate [Caddy webserver](https://caddyserver.com/) container.
 
 The domain suffix is `local` by default, but can be changed in the `.env` file; set the `DOMAIN` variable to the desired domain suffix.
 
 ### Development
 
-For local development, changing provided tools, prompts, etc., the easiest way is to use the dev container, provided by `docker-compose.dev.yml` (overrides). This will volume mount the codebase inside the container, as well as will expose port `8343`.
+For local development, changing provided tools, prompts, etc., the easiest way is to use the dev container setup, provided by `docker-compose.dev.yml` (overrides). This will volume mount the codebase inside the PHP container, and Caddy will expose port `8343`.
 
-1) Start dev container
+1) Start dev containers
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d mcp --build --force-recreate
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build --force-recreate
 # or,
 make up-dev
 ```
@@ -239,7 +241,7 @@ Example for local development (use Docker)
 ### Streamable HTTP in LibreChat
 
 LibreChat.ai MCP example
-- Run first the MCP server (see above, e.g. `docker compose up -d mcp` or `make up`)
+- Run first the MCP server (see above, e.g. `docker compose up -d` or `make up`)
 - The dev server is accessible at http://localhost:8343/
 - Run the LibreChat server (see https://github.com/LibreChat/librechat-server)
 - Configure LibreChat to use the MCP server (see https://github.com/LibreChat/librechat-server/blob/main/docs/mcp.md)
@@ -272,9 +274,9 @@ Tips
   - `Helpers/`: Internal helpers (e.g., content type and ADL mapping)
   - `Apis/`: Internal API clients
   - `constants.php`: loads env and defaults
-- `docker-compose.yml`: services (`mcp`) for production-like run (Caddy on 443)
-- `docker-compose.dev.yml`: dev overrides for service (`mcp`) exposing port 8343 and volume mounting source
-- `Dockerfile`: multi-stage build (development, production)
+- `docker-compose.yml`: services (`mcp`, `caddy`) for production-like run (Caddy on 443)
+- `docker-compose.dev.yml`: dev overrides for services, exposing port 8343 via Caddy
+- `Dockerfile`: multi-stage PHP-FPM build (development, production)
 - `Makefile`: handy shortcuts
 - `tests/`: PHPUnit and PHPStan config and tests
 

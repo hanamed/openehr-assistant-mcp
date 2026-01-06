@@ -9,6 +9,16 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-01-06
+
+### Added
+
+- MCP server published at https://openehr-assistant-mcp.apps.cadasto.com/
+
+### Changed
+
+- Decoupled Docker architecture: separated the MCP service into two distinct containers for PHP-FPM (`mcp`) and Caddy (`caddy`), improving security and maintainability.
+
 ## [0.5.0] - 2026-01-03
 
 ### Changed

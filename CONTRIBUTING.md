@@ -39,7 +39,7 @@ Recommended developer workflow (inside Docker):
 1. `git clone <your-fork-url>`
 2. `cd openehr-assistant-mcp`
 3. Option A - Docker Compose directly:
-   - `docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d mcp --build --force-recreate`
+   - `docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build --force-recreate`
    
    Option B - Makefile shortcuts:
    - `make up-dev` (uses both docker-compose files)
@@ -62,7 +62,7 @@ Edit `.env` and set at least:
 
 ## Running the server (stdio and streamable HTTP)
 Inside the dev container:
-- Streamable HTTP (default): available at `http://openehr-assistant-mcp.local:8343/mcp_openehr` when the dev service is up (`make up-dev` or the compose command above)
+- Streamable HTTP (default): available at `http://openehr-assistant-mcp.local:8343/mcp_openehr` when the services are up (`make up-dev` or the compose command above)
 - Stdio (one-off run):
   - Compose: `docker compose -f docker-compose.yml -f docker-compose.dev.yml run --rm mcp php public/index.php --transport=stdio`
   - Make: `make run-stdio`
