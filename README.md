@@ -104,7 +104,26 @@ MCP Transports are used to communicate with MCP clients.
 
 ## Quick Start
 
-To run the MCP server remotely, configure your MCP client to use our server published at https://openehr-assistant-mcp.apps.cadasto.com/, as streamable HTTP transport. 
+### Run remotely
+
+The quickest way to use the assistant without local setup is to connect your MCP client to our hosted instance. 
+This server is optimized for production use and is regularly updated with the latest version.
+- Endpoint URL: https://openehr-assistant-mcp.apps.cadasto.com/
+- Transport Type: streamable-http (SSE)
+
+To connect this server to an MCP client like Claude Desktop, go to Settings → Connectors → Add custom Connector, or alternatively add the following to your mcpServers configuration file:
+```json
+{
+    "mcpServers": {
+        "openehr-assistant-remote": {
+            "type": "streamable-http",
+            "url": "https://openehr-assistant-mcp.apps.cadasto.com/"
+        }
+    }
+}
+```
+
+### Run locally
 
 To run the MCP server locally, the easiest way is to use Docker. Depending on the use case, this can be either a production or development setup.
 
