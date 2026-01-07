@@ -9,6 +9,13 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-01-07
+
+### Changed
+
+- Refined and improved prompt descriptions and system instructions for better AI alignment.
+- Enhanced resource discovery and registration in the server entry point.
+
 ## [0.6.0] - 2026-01-06
 
 ### Added
@@ -43,6 +50,8 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 - Added tests for Terminologies resource, explorer prompt and terminology service tool.
 - Added CKM template tools: `ckm_template_search` and `ckm_template_get` for OET and OPT formats.
 - Added MCP Prompt (CKM Template Explorer): `ckm_template_explorer` to guide users through discovering CKM templates.
+- Added `design_or_review_template` prompt to assist with openEHR Template (OET) design and review.
+- Added comprehensive guides for openEHR templates (principles, rules, syntax, idioms, checklist) used by the new prompt.
 
 ### Changed
 
