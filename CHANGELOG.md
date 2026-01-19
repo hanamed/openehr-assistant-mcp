@@ -9,6 +9,9 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 
 ## [Unreleased]
 
+### Added
+- MCP Resource (Terminology): `openehr://terminology/all` to expose the entire openEHR terminology in JSON format.
+
 ## [0.7.0] - 2026-01-07
 
 ### Changed

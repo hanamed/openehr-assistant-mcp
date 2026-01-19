@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Cadasto\OpenEHR\MCP\Assistant\Resources;
 
 use Mcp\Capability\Attribute\CompletionProvider;
+use Mcp\Capability\Attribute\McpResource;
 use Mcp\Capability\Attribute\McpResourceTemplate;
 use Mcp\Exception\ResourceReadException;
 use Mcp\Server\Builder;
@@ -35,6 +36,47 @@ final class Terminologies
         }
 
         return $this->xml;
+    }
+
+    /**
+     * Read the entire openEHR terminology.
+     *
+     * URI: openehr://terminology/all
+     *
+     * @return array<string, mixed>
+     *   The entire terminology as an associative array.
+     */
+    #[McpResource(
+        uri: 'openehr://terminology/all',
+        name: 'terminology_all',
+        description: 'The entire openEHR terminology',
+        mimeType: 'application/json'
+    )]
+    public function readAll(): array
+    {
+        $xml = $this->loadXml();
+        $results = ['codesets' => [], 'groups' => []];
+        foreach ((array)$xml->xpath('//codeset') as $element) {
+            $results['codesets'][] = [
+                'name' => (string)$element['name'],
+                'issuer' => (string)$element['issuer'],
+                'openehr_id' => (string)$element['openehr_id'],
+                'external_id' => (string)$element['external_id'],
+                'codeset' => array_map(fn($code) => (string)$code['value'], (array)$element->xpath('code')),
+            ];
+        }
+        foreach ((array)$xml->xpath('//group') as $element) {
+            $concepts = [];
+            foreach ($element->concept as $concept) {
+                $concepts[(string)$concept['id']] = (string)$concept['rubric'];
+            }
+            $results['groups'][] = [
+                'name' => (string)$element['name'],
+                'openehr_id' => (string)$element['openehr_id'],
+                'group' => $concepts,
+            ];
+        }
+        return $results;
     }
 
     /**
@@ -115,6 +157,15 @@ final class Terminologies
         } catch (\Exception) {
             return;
         }
+
+        // Register all
+        $builder->addResource(
+            handler: fn() => $instance->readAll(),
+            uri: 'openehr://terminology/all',
+            name: 'terminology_all',
+            description: 'The entire openEHR terminology',
+            mimeType: 'application/json'
+        );
 
         // Register groups
         foreach ($xml->group as $group) {

@@ -33,6 +33,7 @@ Each coded node must have:
 ### 2.2 External Terminology Bindings
 
 Bindings may reference:
+- openEHR
 - SNOMED CT
 - LOINC
 - ICD
@@ -42,6 +43,7 @@ Bindings may reference:
 - Bindings must match the **exact semantic intent** of the node
 - Do not bind to overly generic or loosely related concepts
 - Do not mix code systems within a single value set unless justified
+- openEHR terminology binding should be valid against openEHR terminology (accessible via `openehr://terminology/all`)
 
 ---
 
@@ -98,4 +100,5 @@ Archetype concepts should align with:
 
 | Version | Date | Notes |
 |--------|------|------|
+| 1.0.1 | 2026-01 | Added reference to full openEHR terminology resource |
 | 1.0.0 | 2025-12 | Initial release |
