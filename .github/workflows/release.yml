@@ -1,8 +1,9 @@
-name: Build & publish Docker image (GHCR)
+name: Release Docker image (GHCR)
 
 on:
   push:
-    branches: [ main ]
+    tags:
+      - '*'
 
 permissions:
   contents: read
@@ -11,7 +12,7 @@ permissions:
   id-token: write
 
 jobs:
-  main:
+  release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -32,6 +33,7 @@ jobs:
         with:
           images: ghcr.io/${{ github.repository }}
           tags: |
+            type=ref,event=tag
             type=raw,value=latest
             type=sha,format=short,prefix=sha-
 
