@@ -47,6 +47,14 @@
 - [ ] Data semantics are independent of any one workflow/UI presentation.
 - [ ] Required vs optional elements are well justified.
 
+### 5. Translation & Localisation
+
+- [ ] Translations preserve clinical intent and meaning.
+- [ ] Language is natural for the target clinical register (not awkward literal translation).
+- [ ] Terminology usage is consistent throughout the archetype.
+- [ ] No changes to node identifiers (`at-codes`, `ac-codes`) or RM structure.
+- [ ] Alignment with authoritative target-language clinical terminology (e.g., SNOMED CT).
+
 ---
 
 ## Editorial Content Review
@@ -54,6 +62,7 @@
 - [ ] The archetype name accurately reflects its content. 
 - [ ] Scope is for a *single clinical concept* and not overly narrow or broad. 
 - [ ] Protocol/State sections are used appropriately for measurement procedures vs semantics. 
+- [ ] Metadata (Purpose, Use, Misuse, etc.) is complete and translated where required.
 - [ ] Existing CKM comments and editor tasks have been addressed. 
 
 ---
@@ -86,4 +95,5 @@
 
 | Version | Date       | Notes |
 |---------|------------|-------|
+| 1.1.0   | 2026-01    | Added translation and localisation section |
 | 1.0.0   | 2025-12- | Initial public release |

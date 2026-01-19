@@ -70,9 +70,13 @@ Bindings may reference:
 
 ## 5. Language and Localisation
 
-- Original language should be English
-- Translations must preserve semantic intent, not literal wording
-- Avoid encoding locale-specific semantics in term text
+- **Principle: No Language Primacy.** Archetypes are fully translatable; they can be authored in any language (though English is preferred for international CKM submission).
+- **Semantic Preservation:** Translations must preserve the exact clinical meaning and intent, not necessarily literal word-order.
+- **Natural Phrasing:** Use the target language's clinical register; depart from awkward source wording to produce natural phrasing.
+- **Consistency:** Maintain internal consistency in terminology and grammatical forms (e.g., definite/indefinite forms).
+- **Prohibitions:** Do not translate archetype class names (e.g., ACTION, OBSERVATION). Never change node identifiers (`at-codes`, `ac-codes`) or computable structure during translation.
+- **Translate Metadata:** Narrative fields (Purpose, Use, Misuse, etc.).
+- **Localisation:** Avoid encoding locale-specific semantics or business logic in term text; local presentation belongs to the UI/template layer.
 
 ---
 
@@ -100,5 +104,6 @@ Archetype concepts should align with:
 
 | Version | Date | Notes |
 |--------|------|------|
+| 1.1.0 | 2026-01 | Enhanced language and localisation rules; added CKM workflow section |
 | 1.0.1 | 2026-01 | Added reference to full openEHR terminology resource |
 | 1.0.0 | 2025-12 | Initial release |

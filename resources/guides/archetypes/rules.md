@@ -33,6 +33,8 @@
 
 - **Rule D1:** Bind coded elements to internationally recognised code systems (SNOMED CT, LOINC) whenever possible. Bindings must match exact intent.
 - **Rule D2:** All bindings should reference *actual codes* and not approximate text strings.
+- **Rule D3:** Translation must not change computable semantics, node identifiers, or structure.
+- **Rule D4:** Maintain consistency and natural phrasing in translations; align with authoritative target-language clinical terminology.
 
 ---
 
@@ -61,4 +63,5 @@
 
 | Version | Date | Summary |
 |---------|------------|---------|
+| 1.1.0    | 2026-01 | Added translation rules D3 and D4 |
 | 1.0.0    | 2025-12 | Initial rules set |
