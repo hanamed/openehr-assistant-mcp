@@ -9,6 +9,14 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-01-20
+
+### Changed
+- Dependencies: Updated `mcp/sdk` to v0.3.0 and other developer tools (PHPUnit, PHPStan).
+- MCP Tools: Added `outputSchema` to all tools for better AI client integration and structured outputs.
+- CKM Service: Enhanced `ckm_archetype_search` and `ckm_template_search` with improved scoring logic and structured metadata.
+- Terminology & Type Spec: Refactored `terminology_resolve` and type specification tools to return structured objects instead of flat arrays.
+
 ## [0.8.0] - 2026-01-20
 
 ### Added
