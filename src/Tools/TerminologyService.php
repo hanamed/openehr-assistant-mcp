@@ -16,7 +16,7 @@ readonly final class TerminologyService
     public const string FILE_PATH = APP_RESOURCES_DIR . '/terminology/openehr_terminology.xml';
 
     public function __construct(
-        private LoggerInterface $logger,
+        private readonly LoggerInterface $logger,
     )
     {
     }
@@ -80,7 +80,7 @@ readonly final class TerminologyService
             foreach ($group->concept as $concept) {
                 $id = (string)$concept['id'];
                 $rubric = (string)$concept['rubric'];
-                if ($isId && ($id === $input) || (strcasecmp($rubric, $input) === 0)) {
+                if (($isId && $id === $input) || (!$isId && strcasecmp($rubric, $input) === 0)) {
                     return [
                         'id' => $id,
                         'rubric' => $rubric,
