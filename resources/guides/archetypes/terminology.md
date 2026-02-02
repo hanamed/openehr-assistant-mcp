@@ -43,7 +43,7 @@ Bindings may reference:
 - Bindings must match the **exact semantic intent** of the node
 - Do not bind to overly generic or loosely related concepts
 - Do not mix code systems within a single value set unless justified
-- openEHR terminology binding should be valid against openEHR terminology (accessible via `openehr://terminology/all`)
+- openEHR terminology binding should be valid against openEHR terminology (accessible via `openehr://terminology`)
 
 ---
 

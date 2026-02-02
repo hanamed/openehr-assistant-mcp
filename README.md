@@ -93,11 +93,7 @@ Type Specifications (BMM JSON)
   - `openehr://spec/type/AM2/ARCHETYPE_HRID`
 
 Terminologies (JSON)
-- URI template: `openehr://terminology/{type}/{id}`
-- URI: `openehr://terminology/all` contains all terminology groups and codesets
-- Examples:
-  - `openehr://terminology/group/attestation_reason`
-  - `openehr://terminology/codeset/compression_algorithms`
+- URI: `openehr://terminology` contains all terminology groups and codesets
 - Provides access to both terminology groups (concepts/rubrics) and codesets.
 - On-disk mapping: `resources/terminology/openehr_terminology.xml`
 

@@ -8,10 +8,10 @@ use Mcp\Capability\Attribute\McpPrompt;
 use Mcp\Schema\Content\PromptMessage;
 
 #[McpPrompt(name: 'terminology_explorer')]
-readonly final class TerminologiesExplorer extends AbstractPrompt
+readonly final class TerminologyExplorer extends AbstractPrompt
 {
     /**
-     * Guided workflow to discover and retrieve openEHR Terminology codes, groups, and codesets.
+     * Guided workflow to discover, search, resolve and retrieve openEHR Terminology codes, rubrics, groups, and codesets.
      *
      * @return PromptMessage[]
      */

@@ -62,7 +62,7 @@ These guidelines summarize the high-level architecture, coding conventions, and 
 - **Resources**:
   - `Guides` provides `openehr://guides/{category}/{name}` resources and registers guide resources at startup.
   - `TypeSpecifications` provides `openehr://spec/type/{component}/{name}` resource template.
-  - `Terminologies` provides `openehr://terminology/all` resource and `openehr://terminology/{type}/{id}` resource template. Registers individual terminology resources at startup.
+  - `Terminologies` provides `openehr://terminology` resource.
 - **Completion providers** live in `src/CompletionProviders` and are annotated with `#[CompletionProvider]` to suggest parameter values.
 
 ## Discovering and running developer tools

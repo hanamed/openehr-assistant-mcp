@@ -73,7 +73,6 @@ try {
         ->setLogger($logger);
     // add resources
     Guides::addResources($builder);
-    Terminologies::addResources($builder);
 
     $server = $builder->build();
 

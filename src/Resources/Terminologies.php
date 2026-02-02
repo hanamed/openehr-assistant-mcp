@@ -3,11 +3,8 @@ declare(strict_types=1);
 
 namespace Cadasto\OpenEHR\MCP\Assistant\Resources;
 
-use Mcp\Capability\Attribute\CompletionProvider;
 use Mcp\Capability\Attribute\McpResource;
-use Mcp\Capability\Attribute\McpResourceTemplate;
 use Mcp\Exception\ResourceReadException;
-use Mcp\Server\Builder;
 use SimpleXMLElement;
 
 final class Terminologies
@@ -31,7 +28,7 @@ final class Terminologies
             try {
                 $this->xml = new SimpleXMLElement($content);
             } catch (\Exception $e) {
-                throw new ResourceReadException('Error parsing terminology XML: ' . $e->getMessage());
+                throw new ResourceReadException('Error parsing Terminology XML: ' . $e->getMessage());
             }
         }
 
@@ -39,17 +36,18 @@ final class Terminologies
     }
 
     /**
-     * Read the entire openEHR terminology.
+     * Read the full openEHR Terminology dataset.
      *
-     * URI: openehr://terminology/all
+     * openEHR Terminology consists of:
+     * - Groups: collections of concept–rubric pairs; groups are identified by an openEHR groupId.
+     * - Codesets: standardised enumerations used in openEHR models.
      *
      * @return array<string, mixed>
-     *   The entire terminology as an associative array.
+     *   The full openEHR Terminology dataset.
      */
     #[McpResource(
-        uri: 'openehr://terminology/all',
-        name: 'terminology_all',
-        description: 'The entire openEHR terminology',
+        uri: 'openehr://terminology',
+        name: 'terminology',
         mimeType: 'application/json'
     )]
     public function readAll(): array
@@ -77,120 +75,5 @@ final class Terminologies
             ];
         }
         return $results;
-    }
-
-    /**
-     * Read a terminology group or codeset from openEHR's terminology.
-     *
-     * URI template:
-     *  openehr://terminology/{type}/{openehr_id}
-     *
-     * Examples:
-     *  - openehr://terminology/group/attestation_reason
-     *  - openehr://terminology/codeset/compression_algorithms
-     *
-     * @param string $type
-     *   The terminology type: "group" or "codeset".
-     * @param string $openehr_id
-     *   The openEHR terminology ID.
-     * @return array<string, mixed>
-     *   The terminology group or codeset as an associative array.
-     */
-    #[McpResourceTemplate(
-        uriTemplate: 'openehr://terminology/{type}/{openehr_id}',
-        name: 'terminology',
-        description: 'An openEHR terminology group or codeset',
-        mimeType: 'application/json'
-    )]
-    public function read(
-        #[CompletionProvider(values: ['group', 'codeset'])]
-        string $type,
-        string $openehr_id
-    ): array
-    {
-        $type = strtolower(trim($type));
-        $openehr_id = trim($openehr_id);
-
-        if (!in_array($type, ['group', 'codeset'])) {
-            throw new \InvalidArgumentException(sprintf('Invalid terminology type: %s', $type));
-        }
-
-        $xml = $this->loadXml();
-        $xpath = sprintf('/terminology/%s[@openehr_id="%s"]', $type, $openehr_id);
-        $elements = $xml->xpath($xpath);
-
-        if (empty($elements)) {
-            throw new ResourceReadException(sprintf('Terminology %s not found: %s', $type, $openehr_id));
-        }
-
-        $element = $elements[0];
-        $found = [];
-
-        if ($type === 'group') {
-            foreach ($element->concept as $concept) {
-                $found[(string)$concept['id']] = (string)$concept['rubric'];
-            }
-        } else {
-            foreach ($element->code as $code) {
-                $found[] = (string)$code['value'];
-            }
-        }
-
-        return [
-            'openehr_id' => (string)$element['openehr_id'],
-            'name' => (string)$element['name'],
-            $type => $found,
-        ];
-    }
-
-    /**
-     * Registers terminology groups and codesets as MCP resources.
-     *
-     * @param Builder $builder
-     * @return void
-     */
-    public static function addResources(Builder $builder): void
-    {
-        $instance = new self();
-        try {
-            $xml = $instance->loadXml();
-        } catch (\Exception) {
-            return;
-        }
-
-        // Register all
-        $builder->addResource(
-            handler: fn() => $instance->readAll(),
-            uri: 'openehr://terminology/all',
-            name: 'terminology_all',
-            description: 'The entire openEHR terminology',
-            mimeType: 'application/json'
-        );
-
-        // Register groups
-        foreach ($xml->group as $group) {
-            $id = (string)$group['openehr_id'];
-            $name = (string)$group['name'];
-            $builder->addResource(
-                handler: fn() => $instance->read('group', $id),
-                uri: sprintf('openehr://terminology/group/%s', $id),
-                name: sprintf('terminology_group_%s', $id),
-                description: sprintf('Group: %s', $name),
-                mimeType: 'application/json'
-            );
-        }
-
-        // Register codesets
-        foreach ($xml->codeset as $codeset) {
-            $id = (string)$codeset['openehr_id'];
-            $name = (string)$codeset['name'];
-            $builder->addResource(
-                handler: fn() => $instance->read('codeset', $id),
-                uri: sprintf('openehr://terminology/codeset/%s', $id),
-                name: sprintf('terminology_codeset_%s', $id),
-                description: sprintf('Codeset: %s', $name),
-                mimeType: 'application/json'
-            );
-        }
     }
 }

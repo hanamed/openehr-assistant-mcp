@@ -127,10 +127,8 @@ docker compose -f docker-compose.yml -f docker-compose.dev.yml exec mcp vendor\b
   - Type Specifications (BMM JSON) via `TypeSpecifications::read()` in `src\Resources\TypeSpecifications.php`
     - URI template: `openehr://spec/type/{component}/{name}` (e.g., `openehr://spec/type/RM/COMPOSITION`).
     - Files map to `resources/bmm/{COMPONENT}/{NAME}.bmm.json`.
-  - Terminologies (JSON) via `Terminologies::read()` in `src\Resources\Terminologies.php`
-    - URI template: `openehr://terminology/{type}/{id}` (e.g., `openehr://terminology/group/composition_category`).
+  - Terminologies (JSON) via `Terminologies::readAll()` in `src\Resources\Terminologies.php`
     - Files map to `resources/terminology/openehr_terminology.xml`.
-    - Discoverability: `Terminologies::addResources()` registers all terminology groups and codesets as MCP resources at startup.
 - Completion Providers (attribute `#[CompletionProvider]`) live in `src\CompletionProviders` and provide parameter suggestions to tools/resources:
   - `Guides`: suggests guide names from `resources/guides/archetypes` for the `{name}` segment of guide resource URIs.
   - `SpecificationComponents`: suggests available `{component}` values from `resources/bmm` for type specification resource URIs.
@@ -161,7 +159,7 @@ PR checklist:
 Testing notes
 - Prompt tests live under `tests/Prompts` and validate the `__invoke()` message shape and `#[McpPrompt]` attributes.
 - Guides resource tests live under `tests/Resources` and validate that `Guides::addResources()` registers `openehr://guides/...` resources and that `Guides::read()` loads known documents.
-- Terminology resource tests live under `tests/Resources` and validate that `Terminologies::addResources()` registers `openehr://terminology/...` resources and that `Terminologies::read()` loads known terminologies.
+- Terminology resource tests live under `tests/Resources` and validate that `Terminologies::readAll()` returns the full openEHR terminology.
 - Completion provider tests live under `tests/CompletionProviders` and validate that providers return expected suggestions given repository contents.
 
 

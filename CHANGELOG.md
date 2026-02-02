@@ -13,6 +13,7 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 - Docs: Added `AGENTS.md` file.
 
 ### Changed
+- Removed MCP Resource templates like `openehr://terminology/{type}` and assocated Completion Providers from the codebase; promote `openehr://terminology` instead; refactor TerminologyExplorer Prompt.
 - MCP Server: implemented file-based cache for discovery using Symfony Cache.
 - MCP Tools: improve JSON handling with exceptions; improve search results scores and ordering.
 - MCP Prompts: convert inline prompt classes to YAML prompt files

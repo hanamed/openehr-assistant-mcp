@@ -22,10 +22,10 @@ readonly final class TerminologyService
     }
 
     /**
-     * Resolve an openEHR Terminology concept ID to its rubric, or find the ID for a given rubric.
+     * Resolve an openEHR Terminology concept ID to its rubric, or find the concept ID for a given rubric.
      *
-     * This tool helps in resolving internal openEHR Terminology identifiers to human-readable labels (rubrics) and vice versa.
-     * It searches across all groups in the openEHR terminology.
+     * This tool helps in resolving openEHR Terminology identifiers (concept IDs) to human-readable labels (rubrics) and vice versa.
+     * It searches across all groups defined in the openEHR Terminology.
      * Matching:
      * - If `input` is numeric, it's treated as a concept (ID), and the corresponding rubric is returned.
      * - If `input` is non-numeric, it's treated as a rubric (case-insensitive) and the corresponding ID is returned.
