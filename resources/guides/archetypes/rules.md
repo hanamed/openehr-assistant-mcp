@@ -1,119 +1,117 @@
 # openEHR Archetype Design Rules
 
-**Scope:** Concrete guidance and rules for modelling openEHR archetypes
-**Related:** check also `openehr://guides/archetypes/structural-constraints` and `openehr://guides/archetypes/terminology`
-**Keywords:** archetype, design, rules, modelling, guidance, ADL, structure
+**Scope:** Normative rules for modelling openEHR archetypes
+**Related:** `openehr://guides/archetypes/structural-constraints`, `openehr://guides/archetypes/terminology`
+**Keywords:** archetype, rules, modelling, ADL
 
 ---
 
 ## A. Concept and Scope
 
-- **Rule A1:** An archetype SHALL represent exactly one coherent clinical or domain concept.
-- **Rule A2:** An archetype SHALL NOT combine unrelated or weakly related concepts (e.g., observations and orders).
-- **Rule A3:** The scope SHALL be broad enough for international reuse but no broader than the core semantic concept.
-- **Rule A4:** If a concept is use-case, document, or workflow specific, it SHALL be modelled as a template, not an archetype.
+- **A1:** An archetype SHALL represent exactly one coherent clinical or domain concept.
+- **A2:** An archetype SHALL NOT combine unrelated concepts (e.g., observations and orders).
+- **A3:** Scope SHALL be broad enough for international reuse but no broader than the core concept.
+- **A4:** Use-case or workflow-specific models SHALL be templates, not archetypes.
 
 ---
 
-## B. Metadata Conventions
+## B. Metadata
 
-- **Rule B1:** Use standard naming conventions for archetype IDs:  
-  `openEHR-<DOMAIN>-<TYPE>.<name>.v<N>`
-- **Rule B2:** Provide a clear, clinician-friendly *purpose* description.
+- **B1:** Archetype IDs follow: `openEHR-<DOMAIN>-<TYPE>.<name>.v<N>`
+- **B2:** Provide a clear, clinician-friendly purpose description.
 
 ---
 
-## C. Structural Modelling Rules
+## C. Structural Modelling
 
-- **Rule C1:** RM structures SHALL be used as intended; archetypes MUST NOT compensate for missing application features.
-- **Rule C2:** Cardinalities (min/max) SHALL be justified by clinical reality, not UI convenience.
-- **Rule C3:** Optionality SHOULD be maximised in archetypes; restriction belongs in templates.
-- **Rule C4:** Leaf nodes SHALL represent atomic data values using appropriate RM data types (e.g., DV_QUANTITY, DV_CODED_TEXT).
-- **Rule C5:** Repeating structures SHALL be modelled using RM repetition mechanisms, not duplicated nodes.
-- **Rule C6:** Clusters SHALL only be used for logically inseparable sub-concepts.
+- **C1:** RM structures SHALL be used as intended; do not compensate for missing application features.
+- **C2:** Cardinalities SHALL be justified by clinical reality, not UI convenience.
+- **C3:** Maximise optionality in archetypes; restriction belongs in templates.
+- **C4:** Leaf nodes SHALL use appropriate RM data types (DV_QUANTITY, DV_CODED_TEXT, etc.).
+- **C5:** Repeating structures SHALL use RM repetition, not duplicated nodes.
+- **C6:** Clusters SHALL only group logically inseparable sub-concepts.
 
 ---
 
 ## D. Reuse, Slots, and Specialisation
 
-- **Rule D1:** Existing published archetypes SHALL be reused wherever semantically appropriate.
-- **Rule D2:** Slots SHALL be constrained explicitly to avoid uncontrolled archetype inclusion.
-- **Rule D3:** Specialisation SHALL only be used for true semantic subtypes of the parent concept.
-- **Rule D4:** A specialised archetype SHALL preserve the meaning and intent of its parent.
-- **Rule D5:** Creating a new archetype for minor structural preference is prohibited.
-- **Rule D6:** Only single inheritance is allowed; an archetype cannot have multiple specialisation parents.
-- **Rule D7:** Specialised node identifiers use dot-extension notation based on specialisation depth (e.g., `at0001.1` at depth 1, `at0001.0.1` at depth 2 specialising `at0001`).
-- **Rule D8:** Internal references (`use_node` / ARCHETYPE_INTERNAL_REF) SHALL be used to reuse identical constraint structures within the same archetype rather than duplicating them.
+- **D1:** Reuse existing published archetypes wherever semantically appropriate.
+- **D2:** Slots SHALL be explicitly constrained.
+- **D3:** Specialisation SHALL only be used for true semantic subtypes.
+- **D4:** Specialised archetypes SHALL preserve parent meaning and intent.
+- **D5:** Do not create new archetypes for minor structural preference.
+- **D6:** Single inheritance only; no multiple specialisation parents.
+- **D7:** Specialised node identifiers use dot-extension notation (e.g., `at0001.1` at depth 1, `at0001.0.1` at depth 2).
+- **D8:** Use internal references (`use_node`) to reuse identical structures rather than duplicating.
 
 ---
 
 ## E. Terminology and Language
 
-- **Rule E1:** Archetypes SHALL be terminology-neutral; terminology bindings are optional but recommended.
-- **Rule E2:** When bindings are provided, they SHALL reference authoritative, internationally recognised code systems.
-- **Rule E3:** Bind coded elements to internationally recognised code systems (SNOMED CT, LOINC) whenever possible. 
-- **Rule E4:** Bindings SHALL reflect semantic equivalence, not approximate or convenience mappings.
-- **Rule E5:** Textual descriptions and translations SHALL NOT alter computable semantics, node identifiers, or structure.
-- **Rule E6:** Translations SHOULD use authoritative clinical language in the target locale.
+- **E1:** Archetypes SHALL be terminology-neutral; bindings are optional but recommended.
+- **E2:** Bindings SHALL reference authoritative, internationally recognised code systems.
+- **E3:** Bind coded elements to SNOMED CT, LOINC, etc. where possible.
+- **E4:** Bindings SHALL reflect semantic equivalence, not approximate mappings.
+- **E5:** Translations SHALL NOT alter computable semantics, identifiers, or structure.
+- **E6:** Translations SHOULD use authoritative clinical language in the target locale.
 
 ---
 
-## F. Paths, Identifiers, and Queryability
+## F. Paths and Identifiers
 
-- **Rule F1:** All nodes SHALL have stable identifiers (at-codes) that MUST NOT change across compatible versions.
-- **Rule F2:** Archetype paths SHALL remain stable to ensure AQL query compatibility.
-- **Rule F3:** Path design SHOULD support intuitive semantic querying and downstream analytics.
-
----
-
-## G. Versioning and Evolution
-
-- **Rule G1:** Changes that alter semantic meaning or invalidate existing data SHALL trigger a major version increment.
-- **Rule G2:** Additive, backward-compatible changes MAY increment minor or patch versions.
-- **Rule G3:** Deprecated elements SHOULD be retained and clearly marked rather than removed.
-- **Rule G4:** Versioning decisions SHALL be based on semantic impact, not modelling effort.
+- **F1:** All nodes SHALL have stable identifiers (at-codes) unchanged across compatible versions.
+- **F2:** Archetype paths SHALL remain stable for AQL query compatibility.
+- **F3:** Path design SHOULD support intuitive semantic querying.
 
 ---
 
-## H. Governance and Review
+## G. Versioning
 
-- **Rule H1:** Archetypes SHALL undergo multidisciplinary peer review before publication.
-- **Rule H2:** All reviewer comments and resolutions SHALL be documented in revision metadata.
-- **Rule H3:** Published archetypes SHALL align with existing governance and CKM editorial standards.
-- **Rule H4:** Clinical safety and semantic clarity SHALL take precedence over local optimisation.
-
----
-
-## I. Interoperability and Sustainability
-
-- **Rule I1:** Archetypes SHALL be designed to support semantic interoperability across systems and jurisdictions.
-- **Rule I2:** Local business rules, workflow logic, and validation specific to an application SHALL NOT be encoded in archetypes.
-- **Rule I3:** Modelling decisions SHOULD favour long-term stability over short-term implementation convenience.
+- **G1:** Semantic or data-invalidating changes SHALL trigger a major version increment.
+- **G2:** Additive, backward-compatible changes MAY increment minor or patch versions.
+- **G3:** Deprecated elements SHOULD be retained and marked, not removed.
+- **G4:** Versioning decisions SHALL be based on semantic impact.
 
 ---
 
-## J. ADL 1.4 Validity (Formal)
+## H. Governance
 
-The following validity rules are defined in the ADL 1.4 specification and SHOULD be enforced by tooling:
+- **H1:** Archetypes SHALL undergo multidisciplinary peer review before publication.
+- **H2:** Reviewer comments and resolutions SHALL be documented.
+- **H3:** Published archetypes SHALL align with CKM editorial standards.
+- **H4:** Clinical safety and semantic clarity take precedence over local optimisation.
 
-- **VARID:** Archetype identifier validity — the archetype MUST have a valid `archetype_id` conforming to openEHR identifier specification.
-- **VARCN:** Archetype concept validity — the `concept` section MUST reference a term that exists in the ontology.
-- **VARDF:** Archetype definition validity — the archetype MUST have a valid `definition` section in cADL.
-- **VARON:** Archetype ontology validity — the archetype MUST have a valid `ontology` section.
-- **VARDT:** Archetype definition typename validity — the root RM type in `definition` MUST match the type in the archetype ID.
-- **VATDF:** Archetype term validity — every at-code used in `definition` MUST be defined in `term_definitions`.
-- **VACDF:** Constraint code validity — every ac-code used in `definition` MUST be defined in `constraint_definitions`.
-- **VDFAI:** Archetype identifier validity in definition — archetype IDs in slots MUST conform to openEHR identifier specification.
-- **VDFPT:** Path validity in definition — all paths in `definition` MUST be syntactically valid and structurally correct.
+---
+
+## I. Interoperability
+
+- **I1:** Archetypes SHALL support semantic interoperability across systems and jurisdictions.
+- **I2:** Local business rules, workflow logic, and application-specific validation SHALL NOT be encoded.
+- **I3:** Favour long-term stability over short-term implementation convenience.
+
+---
+
+## J. ADL 1.4 Validity
+
+Validity rules enforced by tooling:
+
+- **VARID:** Valid `archetype_id` per openEHR specification
+- **VARCN:** `concept` references a term in ontology
+- **VARDF:** Valid `definition` section in cADL
+- **VARON:** Valid `ontology` section
+- **VARDT:** Root RM type matches archetype ID type
+- **VATDF:** Every at-code in `definition` defined in `term_definitions`
+- **VACDF:** Every ac-code in `definition` defined in `constraint_definitions`
+- **VDFAI:** Slot archetype IDs conform to identifier specification
+- **VDFPT:** All paths syntactically valid and structurally correct
 
 ---
 
 ## K. AOM 1.4 Structural Invariants
 
-The following invariants from the AOM 1.4 specification apply to constraint objects:
 - C_ATTRIBUTE: `Rm_attribute_name_valid`, `Existence_set`, `Children_validity`
 - C_MULTIPLE_ATTRIBUTE: `Cardinality_valid`, `Members_valid`
-- ARCHETYPE_SLOT: `Includes_valid`: `Excludes_valid`: `Validity`
+- ARCHETYPE_SLOT: `Includes_valid`, `Excludes_valid`, `Validity`
 - ARCHETYPE_INTERNAL_REF: `target_path` 
 
 ---

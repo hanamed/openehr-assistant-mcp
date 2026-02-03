@@ -1,212 +1,155 @@
 # openEHR Archetype ADL & Syntax Guide
 
-**Scope:** Correct and idiomatic use of ADL and the Archetype Model (AM)
-**Applies to:** ADL 1.4 / ADL 2 archetypes
-**Keywords:** ADL, archetype, syntax, guide, reference, formal, constraint, AM, terms, structure, path, definition
+**Scope:** Correct and idiomatic use of ADL and the Archetype Object Model (AOM)
+**Keywords:** ADL, archetype, syntax, guide, reference, formal, constraint, AM, AOM, terms, structure, path, definition
 
 ---
 
 ## Purpose of ADL
 
-The Archetype Definition Language (ADL) is a **formal constraint language** used to express:
+ADL is a **formal constraint language** expressing:
 - constraints on the openEHR Reference Model (RM)
 - clinical semantics via archetype terms
 - computable structure with stable paths
 
-ADL is **not** a programming language and **not** a data serialization format.
+ADL is not a programming language or data serialization format.
 
 ---
 
 ## Archetype Model Fundamentals
 
-An archetype constrains:
-- RM classes (e.g. COMPOSITION, OBSERVATION, CLUSTER, ELEMENT, ITEM_TREE)
-- Attributes of those classes
-- Occurrences and cardinalities
-- Data value types (DV_*)
+An archetype constrains RM classes, attributes, occurrences/cardinalities, and data types (DV_*).
 
-**Rule:**
-> Every constraint must be valid with respect to the openEHR Archetype Object Model (AOM) and the underlying RM.
+> Every constraint must be valid against the AOM and underlying RM.
 
 ### AOM Constraint Types (AOM 1.4)
 
-The Archetype Object Model defines a hierarchy of constraint types:
-
-- **C_OBJECT** — abstract constraint on any object node; has `rm_type_name`, `occurrences`, and `node_id`
-- **C_COMPLEX_OBJECT** — constraint on a complex RM type with attributes
-- **C_PRIMITIVE_OBJECT** — constraint on primitive types (String, Integer, Boolean, Date, etc.)
-- **C_ATTRIBUTE** — constraint on an attribute; has `rm_attribute_name` and `existence`
-  - **C_SINGLE_ATTRIBUTE** — single-valued attribute (exactly one child)
-  - **C_MULTIPLE_ATTRIBUTE** — container attribute with `cardinality`
-- **ARCHETYPE_SLOT** — placeholder for other archetypes via `include`/`exclude` assertions
+- **C_OBJECT** — abstract; has `rm_type_name`, `occurrences`, `node_id`
+- **C_COMPLEX_OBJECT** — complex RM type with attributes
+- **C_PRIMITIVE_OBJECT** — primitive types (String, Integer, Date, etc.)
+- **C_ATTRIBUTE** — attribute constraint; has `rm_attribute_name`, `existence`
+    - **C_SINGLE_ATTRIBUTE** — single-valued (one child)
+    - **C_MULTIPLE_ATTRIBUTE** — container with `cardinality`
+- **ARCHETYPE_SLOT** — placeholder via `include`/`exclude` assertions
 - **ARCHETYPE_INTERNAL_REF** — reuse constraint from elsewhere in same archetype via `target_path` (ADL: `use_node`)
-- **CONSTRAINT_REF** — reference to an ac-code for external terminology constraints
+- **CONSTRAINT_REF** — reference to ac-code for external terminology
 
 ---
 
-## Archetype Sections and Their Meaning
+## Archetype Sections
 
-### Header Section
+### Header
+- Archetype identifier, original language, description/metadata
+- ID must follow naming conventions; version reflects semantic compatibility
 
-Includes:
-- archetype identifier
-- original language
-- description and metadata
+### Definition
+- Formal constraint tree
+- Root node matches declared RM type
+- All constraints follow RM attribute semantics
 
-**Rules:**
-- Archetype ID must follow naming conventions
-- Version suffix must reflect semantic compatibility
+### Ontology / Terminology
+- `term_definitions`: at-codes with text and description
+- `constraint_definitions`: ac-codes explaining value set meaning
+- `term_bindings`: at-codes → external terminology codes
+- `constraint_bindings`: ac-codes → terminology queries
 
----
+### Invariant 
+Optional section for first-order predicate logic assertions (cross-node relationships, formulae, conditional constraints):
 
-### Definition Section
-
-The `definition` section contains the **formal constraint tree**.
-
-- Root node must correspond to the declared RM type
-- All constraints must follow RM attribute semantics
-- Use `C_OBJECT`, `C_ATTRIBUTE`, `C_SINGLE_ATTRIBUTE`, `C_MULTIPLE_ATTRIBUTE`, `C_COMPLEX_OBJECT`, `ARCHETYPE_SLOT` correctly
-
----
-
-### Ontology / Terminology Section
-
-Defines:
-- archetype terms (`at-codes`) in `term_definitions`
-- constraint definitions (`ac-codes`) in `constraint_definitions`
-- term bindings to external terminologies in `term_bindings`
-- constraint bindings (terminology queries) in `constraint_bindings`
-
-**Rules:**
-- Every node identifier (`atNNNN`) must have a term definition with text and description.
-- Every constraint code (`acNNNN`) must have a constraint definition explaining its meaning.
-- Term bindings map at-codes to external terminology codes (global or path-based).
-- Constraint bindings map ac-codes to terminology queries (e.g., "any subtype of hepatitis").
-
-### Invariant Section (ADL 1.4)
-
-The optional `invariant` (or `rules`) section contains first-order predicate logic assertions that apply across the entire archetype. Use for constraints that cannot be expressed within the block structure of the definition section, such as:
-- Cross-node relationships
-- Mathematical formulae between values
-- Conditional constraints
-
-Example:
 ```adl
 invariant
-    speed_validity: /speed[at0002]/kilometres/magnitude = /speed[at0004]/miles/magnitude * 1.6
+    speed_validity: /speed[at0002]/km/magnitude = /speed[at0004]/miles/magnitude * 1.6
 ```
 
 ---
 
-## Constraint Syntax and Idioms
+## Constraint Syntax
 
-### RM Attribute Constraints
-
+### RM Attributes
 - Use RM attribute names exactly as defined
-- Do not invent or alias RM attributes
-- Respect attribute multiplicity
+- Do not invent or alias attributes
 
 **Incorrect:**
 ```adl
-value matches {
-  DV_TEXT
-}
+value matches { DV_TEXT }
 ```
 **Correct:**
 ```adl
-value matches {
-  DV_TEXT matches {*}
-}
+value matches { DV_TEXT matches {*} }
 ```
 
-### Occurrences vs Cardinality vs Existence (AOM 1.4)
+### Existence vs Occurrences vs Cardinality
 
-- **existence** — applies to attributes; indicates whether the attribute value is mandatory (`1..1`) or optional (`0..1`); range is always within `0..1`
-- **occurrences** — applies to object nodes (C_OBJECT); indicates how many times the object may appear under its owning attribute
-- **cardinality** — applies to container attributes (C_MULTIPLE_ATTRIBUTE); indicates how many children the container may hold
+- **existence** — attributes; mandatory (`1..1`) or optional (`0..1`)
+- **occurrences** — object nodes; how many times object may appear
+- **cardinality** — container attributes; how many children allowed
 
-**Rule:**
-> Never confuse occurrences with cardinality. Use existence for attribute-level optionality.
+> Never confuse occurrences with cardinality.
 
 ### Internal References (use_node)
 
-The `use_node` construct (AOM: `ARCHETYPE_INTERNAL_REF`) allows reusing a constraint defined elsewhere in the same archetype by referencing its path:
-
+Reuse constraints from elsewhere in same archetype:
 ```adl
 use_node CLUSTER[at0010] /items[at0005]
 ```
 
-This avoids duplication and ensures consistency when the same structure appears multiple times.
-
-### Leaf Node Constraints
-
-Leaf nodes must constrain:
-- the RM type (e.g. DV_QUANTITY)
-- optionally its internal attributes (units, magnitude, code)
-
-Avoid unconstrained leaf nodes unless justified.
+### Leaf Nodes
+Constrain RM type and optionally internal attributes (units, magnitude, code). Avoid unconstrained leaves.
 
 ---
 
-## Archetype Paths and Identifiers
+## Paths and Identifiers
 
-- Paths are derived from the constraint tree
-- Paths must be stable across versions
-- Avoid structural refactoring that breaks paths unless versioning rules are followed
+- Paths derived from constraint tree
+- Must be stable across versions
 
-**Rule:**
 > Path stability is more important than aesthetic structure.
 
 ---
 
-## Slot Syntax and Semantics
+## Slots
 
 Slots (allow_archetype, include, exclude) must:
 - Clearly state intent
-- Be constrained whenever possible
+- Constrain whenever possible
 - Reference valid archetype identifiers
-- Avoid unconstrained wildcard slots.
+- Avoid unconstrained wildcards
 
 ---
 
-## ADL Style and Readability
+## ADL Style
 
-Although ADL is machine-readable, it should also be:
-- Human-readable
-- Consistently indented
-- Structured to reflect semantics
-
-Instructions:
+- Human-readable, consistently indented
 - Group related constraints
-- Avoid deeply nested structures without semantic justification
+- Avoid deep nesting without semantic justification
 
 ---
 
-## Versioning and Syntax Changes
+## Versioning
 
-- Syntax-only changes (formatting, comments) → patch version
-- Constraint changes affecting interpretation → minor/major version
-- Structural refactoring → major version
+- Syntax-only changes → patch
+- Constraint changes → minor/major
+- Structural refactoring → major
 
 ---
 
-## Common ADL Syntax Anti-Patterns
+## Anti-Patterns
 
 - Invalid RM attribute names
 - Missing term definitions
-- Unconstrained DV_* usage everywhere
-- Misuse of matches {*} as a default
-- Encoding template logic in archetypes
+- Unconstrained DV_* everywhere
+- `matches {*}` as default
+- Template logic in archetypes
 
 ---
 
-## Validation Expectations
+## Validation
 
 All archetypes must:
-- Parse successfully with an ADL parser
-- Validate against the target RM
+- Parse successfully
+- Validate against RM
 - Preserve semantic paths
 
-> Syntax correctness is a prerequisite for all higher-level modelling quality.
+> Syntax correctness is prerequisite for modelling quality.
 
 ---

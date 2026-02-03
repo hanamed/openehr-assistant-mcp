@@ -1,69 +1,69 @@
 # openEHR Archetype Anti-Patterns
 
-**Purpose:** Common modelling pitfalls to avoid in archetype creation
-**Keywords:** archetype, anti-patterns, modelling, pitfalls, avoid, specialisation, semantics, best practice
+**Purpose:** Common modelling pitfalls to avoid
+**Keywords:** archetype, anti-patterns, modelling, pitfalls, avoid, best practice
 
 ---
 
 ## Overly Broad Concepts
 
-**Anti-Pattern:** Creating archetypes that combine multiple unrelated clinical domains  
-**Example:** An archetype mixing vital signs, clinical assessment, and medication details.  
-**Consequence:** Poor reuse, inconsistent RM alignment, harder semantic querying.
-**Fix:** Reuse available archetypes. Use slots when appropriate. Create separate archetypes for each domain.
+**Problem:** Combining multiple unrelated clinical domains in one archetype  
+**Example:** Mixing vital signs, assessment, and medication.  
+**Impact:** Poor reuse, inconsistent RM alignment, harder querying.  
+**Fix:** Create separate archetypes; use slots for composition.
 
 ---
 
 ## Undocumented Terminology Bindings
 
-**Anti-Pattern:** Adding code bindings without specifying the coding authority or meaning  
-**Example:** Using arbitrary codes without referencing SNOMED CT/LOINC.  
-**Consequence:** Loss of interoperability and increased ambiguity.
-**Fix:** Reference terminology bindings in the archetype.
+**Problem:** Code bindings without specifying authority or meaning  
+**Example:** Arbitrary codes without SNOMED CT/LOINC reference.  
+**Impact:** Loss of interoperability, ambiguity.  
+**Fix:** Always reference authoritative terminology bindings.
 
 ---
 
 ## Excessive Specialisation
 
-**Anti-Pattern:** Creating dozens of specialisations for minor local variations  
-**Example:** Specialising a general “serum glucose” archetype for non-clinical uses.  
-**Consequence:** Fragmentation and reduced ability to share models across sites.
-**Fix:** Use compositions instead of specialisations.
+**Problem:** Many specialisations for minor local variations  
+**Example:** Specialising "serum glucose" for non-clinical uses.  
+**Impact:** Fragmentation, reduced cross-site sharing.  
+**Fix:** Use templates instead of specialisations.
 
 ---
 
 ## Ignoring RM Semantics
 
-**Anti-Pattern:** Modelling data semantics that conflict with the openEHR Reference Model  
-**Example:** Using Entry types incorrectly (e.g., treating Observation as generic record).  
-**Consequence:** Data model inconsistencies, runtime processing issues.
-**Fix:** Use the appropriate RM types and their attributes.
+**Problem:** Modelling that conflicts with RM intent  
+**Example:** Using OBSERVATION as generic record.  
+**Impact:** Data inconsistencies, runtime errors.  
+**Fix:** Use appropriate RM types and attributes.
 
 ---
 
 ## Hardcoding Workflow Logic
 
-**Anti-Pattern:** Embedding clinical workflow or application UI constraints in archetype definitions  
+**Problem:** Embedding workflow or UI constraints in archetypes  
 **Example:** Encoding process ordering as structural constraints.  
-**Consequence:** Reduced archetype portability; clashes with use case specificity provided by templates.
-**Fix:** Use archetypes only for data capture.
+**Impact:** Reduced portability; conflicts with template-level specificity.  
+**Fix:** Keep archetypes for data semantics only.
 
 ---
 
 ## Improper Cardinality Constraints
 
-**Anti-Pattern:** Assigning arbitrary minimum/maximum values without clinical justification  
-**Example:** Mandatory multiple occurrences where single instance suffices.  
-**Consequence:** Erroneous data capture expectations in implementations.
-**Fix:** Use appropriate and documented cardinality constraints.
+**Problem:** Arbitrary min/max values without clinical justification  
+**Example:** Mandatory multiple occurrences where single suffices.  
+**Impact:** Erroneous data capture expectations.  
+**Fix:** Justify and document all cardinality constraints.
 
 ---
 
 ## Path-Breaking Refactors
 
-**Anti-Pattern:** Structural clean-ups or reorganisations that change archetype paths  
-**Example:** Moving nodes for readability in a minor version update.  
-**Consequence:** Query breakage, data migration issues, loss of backward compatibility.
-**Fix:** Treat paths as public API. Path changes require a major version bump.
+**Problem:** Structural changes that alter archetype paths  
+**Example:** Moving nodes for readability in a minor version.  
+**Impact:** Query breakage, data migration issues.  
+**Fix:** Treat paths as public API; path changes require major version.
 
 ---

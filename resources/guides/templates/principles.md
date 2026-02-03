@@ -1,67 +1,56 @@
 # openEHR Template Design Principles
 
-**Scope:** Foundational principles for designing high-quality openEHR templates (OET/OPT)  
-**Source:** openEHR Template Specifications, CKM modelling practices
+**Scope:** Foundational principles for openEHR templates (OET/OPT)
 **Keywords:** templates, OET, OPT, design, principles
 
 ---
 
 ## Use Case Specificity
 
-**Definition:** A template is a clinical dataset definition designed for a **particular use case, scenario, or workflow** (e.g., "Discharge Summary", "Vital Signs Monitoring"). 
+Templates define clinical datasets for **specific use cases** (e.g., "Discharge Summary", "Vital Signs Monitoring").
 
-**Implications:**
-- Unlike archetypes (which are maximal), templates are **minimal**—they should include only what is necessary for the specific context.
-- A template represents the "data set" for a specific business process.
+- Unlike archetypes (maximal), templates are **minimal** — only what's necessary
+- Represents the data set for a specific business process
 
 ---
 
 ## Aggregation and Composition
 
-**Definition:** Templates serve as the assembly layer, aggregating multiple archetypes into a coherent document or data structure (usually a COMPOSITION).
+Templates aggregate multiple archetypes into coherent documents (usually a COMPOSITION).
 
-**Implications:**
-- Templates define the structure of the EHR record by nesting archetypes.
-- They manage the "slots" and "inclusions" defined in archetypes.
-
----
-
-## The "Narrowing" Principle
-
-**Definition:** Templates can only **further constrain** (narrow) the rules defined in the underlying archetypes. They cannot relax constraints or add data points that aren't supported by the archetype's structure.
-
-**Implications:**
-- Mandatory elements in an archetype must remain mandatory.
-- Optional elements can be made mandatory or excluded (max=0).
-- Value sets (terminologies) can be reduced but not expanded beyond the archetype's definition.
+- Define EHR record structure by nesting archetypes
+- Manage slots and inclusions defined in archetypes
 
 ---
 
-## Separation of Design-time and Run-time
+## The Narrowing Principle
 
-**Definition:** openEHR distinguishes between the **Source Template (OET)** used for authoring and the **Operational Template (OPT)** used for technical implementation.
+Templates can only **further constrain** archetypes — never relax or add unsupported data points.
 
-**Implications:**
-- **OET:** Focuses on clinical modelling, references archetypes, and is used in editors (e.g., Ocean Template Designer).
-- **OPT:** A flattened, self-contained XML version containing all constraints and archetype definitions, optimized for software systems.
-
----
-
-## UI and Presentation Awareness
-
-**Definition:** Templates often bridge the gap between clinical models and user interfaces, providing hints for how data should be displayed or captured.
-
-**Implications:**
-- Templates can rename elements to use local or context-specific labels (e.g., renaming "Body mass index" to "BMI").
-- UI-specific flags (like `hide_on_form`) help guide form generation without altering the underlying data model.
+- Mandatory archetype elements remain mandatory
+- Optional elements can be made mandatory or excluded (`max=0`)
+- Value sets can be reduced but not expanded
 
 ---
 
-## Template Reuse and Embedding
+## Design-time vs Run-time
 
-**Definition:** Templates can be designed to be modular and reusable by embedding them within other templates.
+- **OET (Source Template):** For authoring, references archetypes, used in editors
+- **OPT (Operational Template):** Flattened, self-contained XML for runtime systems
 
-**Implications:**
-- Encourages consistency across different clinical documents (e.g., reusing a "Patient Header" template).
+---
+
+## UI and Presentation
+
+Templates bridge clinical models and user interfaces.
+
+- Rename elements for local context (e.g., "Body mass index" → "BMI")
+- UI flags (`hide_on_form`) guide form generation without altering data model
+
+---
+
+## Template Reuse
+
+Templates can embed other templates for modularity and consistency across documents.
 
 ---

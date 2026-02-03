@@ -1,120 +1,87 @@
 # openEHR Archetype Structural Constraint Guide
 
-**Purpose:** Provide guidance on how to use archetype constraints to achieve clinically meaningful structure
-**Keywords:** cardinality, existence, occurrences, slots, structural, constraints, rules, structure, ADL
+**Purpose:** Guidance on archetype constraints for clinically meaningful structure
+**Keywords:** cardinality, existence, occurrences, slots, constraints
 
 ---
 
 ## Design Philosophy
 
-Archetypes should:
-- Be **clinically safe**
-- Remain **maximally reusable**
-- Avoid encoding local workflow assumptions
-
 > Constrain only what is universally true.
 
----
-
-## Existence (Mandatory vs Optional)
-
-In AOM 1.4, **existence** is a constraint on `C_ATTRIBUTE` indicating whether the attribute's value must be present. 
-
-**Note:** Existence applies to attributes, not objects. For object-level optionality, use **occurrences**.
-
-### Mandatory Elements (`existence = 1..1`)
-
-Use only when:
-- The data item is *intrinsic* to the concept
-- Absence would invalidate the record
-
-**Example:**  
-`Systolic value` in a blood pressure measurement
+Archetypes should be clinically safe, maximally reusable, and free of local workflow assumptions.
 
 ---
 
-### Optional Elements (`existence = 0..1`)
+## Existence
 
-Default choice for:
-- Contextual qualifiers
-- Supporting or conditional data
+**Existence** (AOM 1.4) constrains `C_ATTRIBUTE` — whether an attribute value must be present.
+
+- **Mandatory (`1..1`):** Use only when intrinsic to the concept; absence invalidates the record
+- **Optional (`0..1`):** Default for contextual qualifiers and conditional data
+
+**Note:** Existence applies to attributes. For object-level optionality, use **occurrences**.
 
 ---
 
 ## Cardinality and Occurrences
 
-### Single vs Multiple
+- **Single:** when the real-world concept is singular
+- **Multiple:** only when repetition is clinically meaningful
 
-- Use single occurrences when the real-world concept is singular
-- Use multiple occurrences only when repetition is clinically meaningful
+**Avoid:** `0..*` as default; arbitrary upper bounds without rationale.
 
-**Avoid:**
-- `0..*` as a default
-- Artificial upper bounds without rationale
+Upper bounds should reflect real-world constraints and be clinically justified.
 
 ---
 
-### Upper Bounds
+## Slots
 
-Upper bounds should:
-- Reflect real-world constraints
-- Be clinically justified
-- Avoid “magic numbers”
-
----
-
-## Slots and Archetype Reuse
-
-### When to Use Slots
-
-Slots are appropriate when:
-- The content varies by context
+Use slots when:
+- Content varies by context
 - Multiple domain-specific implementations exist
-- Reuse is expected across specialisations
+- Reuse across specialisations is expected
 
----
-
-### Slot Constraints
-
-- Constrain slots by **archetype type and purpose**
-- Avoid unconstrained slots unless absolutely necessary
-- Document intended slot usage clearly
+**Constraints:**
+- Constrain by archetype type and purpose
+- Avoid unconstrained slots
+- Document intended usage
 
 ---
 
 ## Clusters vs Elements
 
-- Use **CLUSTER** for logically grouped sub-concepts
-- Use **ELEMENT** for atomic data values
+- **CLUSTER:** logically grouped sub-concepts
+- **ELEMENT:** atomic data values
 - Do not use clusters as generic containers
 
 ---
 
 ## Avoiding Over-Constraint
 
-**Do not encode:**
-- UI layout assumptions
+Do not encode in archetypes:
+- UI layout
 - Workflow sequencing
 - Local business rules
 - Template-level decisions
 
-Those belong in **templates**, not archetypes.
+These belong in **templates**.
 
 ---
 
-## Structural Anti-Patterns
+## Anti-Patterns
 
 - Making everything mandatory
 - Excessive nesting without semantic value
-- Deep hierarchies to compensate for poor concept scoping
-- Using slots to bypass modelling decisions
+- Deep hierarchies compensating for poor scoping
+- Slots bypassing modelling decisions
 
 ---
 
 ## Review Questions
 
 - Could this constraint prevent legitimate reuse?
-- Is this constraint universally true?
-- Would a template be a better place for this rule?
+- Is this universally true?
+- Should this be a template concern?
 
 ---
