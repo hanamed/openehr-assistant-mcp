@@ -49,6 +49,11 @@ CKM (Clinical Knowledge Manager)
 openEHR Terminology
 - `terminology_resolve` - Resolve an openEHR terminology concept ID to its rubric, or find the ID for a given rubric across groups.
 
+Guides (model-reachable)
+- `guide_search` - Search bundled guides by query and return short snippets with canonical openehr://guides URIs.
+- `guide_get` - Retrieve guide content by URI or (category, name) with chunked sections by default.
+- `guide_adl_idiom_lookup` - Lookup targeted ADL idiom snippets from the cheatsheet for common modelling patterns.
+
 openEHR Type specification
 - `type_specification_search` - List bundled openEHR Type specifications matching search criteria.
 - `type_specification_get` - Retrieve an openEHR Type specification (as BMM JSON).
@@ -60,6 +65,7 @@ Optional prompts that guide AI assistants through common openEHR and CKM workflo
 - `ckm_template_explorer` - Explore CKM Templates by discovering and fetching definitions (OET/OPT), using `ckm_template_search` and `ckm_template_get` tools.
 - `type_specification_explorer` - Discover and fetch openEHR Type specifications (as BMM JSON) using `type_specification_search` and `type_specification_get` tools.
 - `terminology_explorer` - Discover and retrieve openEHR terminology definitions (groups and codesets) using terminology resources.
+- `guide_explorer` - Discover and retrieve openEHR implementation guides using `guide_search`, `guide_get`, and `guide_adl_idiom_lookup` tools.
 - `explain_archetype` - Explain an archetype’s semantics (audiences, elements, constraints).
 - `explain_template` - Explain openEHR Template semantics.
 - `translate_archetype_language` - Translate an archetype’s terminology section between languages with safety checks.
@@ -75,11 +81,13 @@ Completion providers supply parameter suggestions in MCP clients when invoking t
 
 ### Resources
 
-MCP Server Resources are exposed via `#[McpResource]` annotated methods and can be fetched by MCP clients using `openehr://...` URIs. They are used most of the time in the prompts above, to inject data or instructions into the conversation.
+MCP Server Resources are exposed via `#[McpResource]` annotated methods and can be fetched by MCP clients using `openehr://...` URIs. 
+They are used to provide access to openEHR resources (guides, specifications, terminology) and to orchestrate complex workflows.
 
 Guides (Markdown)
 - URI template: `openehr://guides/{category}/{name}`
 - On-disk mapping: `resources/guides/{category}/{name}.md`
+- Model access: use `guide_search` and `guide_get` to retrieve guide content in short, task-relevant chunks.
 - Examples:
   - `openehr://guides/archetypes/checklist`
   - `openehr://guides/archetypes/adl-syntax`
