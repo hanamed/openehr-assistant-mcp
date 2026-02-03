@@ -1,12 +1,11 @@
 # openEHR Archetype Terminology & Ontology Guide
-**URI:** openehr://guides/archetypes/terminology  
-**Version:** 1.0.0  
-**Scope:** Terminology modelling, value sets, and external terminology bindings in archetypes  
-**Applies to:** Archetypes (ADL), not templates
+
+**Purpose:** Provide guidance on terminology modelling and terminology binding in archetypes, including value sets and external terminology bindings.
+**Keywords:** terminology, archetypes, value sets, external bindings, term, binding, ontology, code
 
 ---
 
-## 1. Core Principle: Archetypes are Terminology-Neutral
+## Core Principle: Archetypes are Terminology-Neutral
 
 Archetypes define **clinical meaning**, not terminologies.
 
@@ -16,9 +15,9 @@ Archetypes define **clinical meaning**, not terminologies.
 
 ---
 
-## 2. Internal vs External Terminology
+## Internal vs External Terminology
 
-### 2.1 Internal Terminology (Archetype Terms)
+### Internal Terminology (Archetype Terms)
 
 Each coded node must have:
 - A clear **text**
@@ -30,7 +29,7 @@ Each coded node must have:
 
 ---
 
-### 2.2 External Terminology Bindings
+### External Terminology Bindings
 
 Bindings may reference:
 - openEHR
@@ -47,20 +46,20 @@ Bindings may reference:
 
 ---
 
-## 3. Value Sets and DV_CODED_TEXT
+## Value Sets and DV_CODED_TEXT
 
-### 3.1 Use Coded Value Sets When:
+### Use Coded Value Sets When:
 - The domain concept is clinically enumerated
 - Comparability or analytics is expected
 - International reuse is anticipated
 
-### 3.2 Avoid Coded Value Sets When:
+### Avoid Coded Value Sets When:
 - The domain is free-text by nature
 - Values are unpredictable or narrative
 
 ---
 
-## 4. Binding Granularity
+## Binding Granularity
 
 - Bind **leaf nodes**, not structural containers
 - Avoid binding at multiple hierarchy levels for the same concept
@@ -68,7 +67,7 @@ Bindings may reference:
 
 ---
 
-## 5. Language and Localisation
+## Language and Localisation
 
 - **Principle: No Language Primacy.** Archetypes are fully translatable; they can be authored in any language (though English is preferred for international CKM submission).
 - **Semantic Preservation:** Translations must preserve the exact clinical meaning and intent, not necessarily literal word-order.
@@ -80,7 +79,7 @@ Bindings may reference:
 
 ---
 
-## 6. Ontological Alignment
+## Ontological Alignment
 
 Archetype concepts should align with:
 - Real-world clinical ontology structure
@@ -91,7 +90,7 @@ Archetype concepts should align with:
 
 ---
 
-## 7. Common Terminology Anti-Patterns
+## Common Terminology Anti-Patterns
 
 - Binding vague nodes (e.g. “Other”, “Miscellaneous”)
 - Reusing codes with different meanings
@@ -99,11 +98,3 @@ Archetype concepts should align with:
 - Encoding workflow states as coded clinical values
 
 ---
-
-## Revision History
-
-| Version | Date | Notes |
-|--------|------|------|
-| 1.1.0 | 2026-01 | Enhanced language and localisation rules; added CKM workflow section |
-| 1.0.1 | 2026-01 | Added reference to full openEHR terminology resource |
-| 1.0.0 | 2025-12 | Initial release |

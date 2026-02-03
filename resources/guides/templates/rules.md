@@ -1,8 +1,8 @@
 # openEHR Template Design Rules
-**URI:** openehr://guides/templates/rules  
-**Version:** 1.0.0  
+
 **Scope:** Concrete modelling rules and best practices for openEHR templates
 **Related:** openehr://guides/templates/principles, openehr://guides/templates/oet-syntax
+**Keywords:** template, OET, OPT, design, rules, modeling, guidance, structure
 
 ---
 
@@ -44,9 +44,3 @@
 - **Rule F3:** Use **Web Templates (JSON)** for UI development to simplify integration with modern web frameworks.
 
 ---
-
-## Revision History
-
-| Version | Date | Summary |
-|---------|------------|---------|
-| 1.0.0    | 2025-12 | Initial rules set |

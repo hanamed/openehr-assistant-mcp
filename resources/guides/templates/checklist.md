@@ -1,8 +1,8 @@
-# openEHR Template Review Checklist
-**URI:** openehr://guides/templates/checklist  
-**Version:** 1.0.0  
+# openEHR Template Design & Review Checklist
+
 **Scope:** A practical checklist for reviewing and validating openEHR templates
-**Related:** openehr://guides/templates/principles, openehr://guides/templates/rules
+**Related:** check also `openehr://guides/templates/principles` and `openehr://guides/templates/rules` guides
+**Keywords:** design, review, checklist, quality, QA, consistency, best practice, clinical, terminology, structure, metadata, guideline
 
 ---
 
@@ -41,9 +41,3 @@
 - [ ] If required, have FHIR or other terminology mappings been added as annotations?
 
 ---
-
-## Revision History
-
-| Version | Date | Summary |
-|---------|------------|---------|
-| 1.0.0    | 2025-12 | Initial checklist release |

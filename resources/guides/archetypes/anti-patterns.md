@@ -1,11 +1,11 @@
 # openEHR Archetype Anti-Patterns
-**URI:** openehr://guides/archetypes/anti-patterns  
-**Version:** 1.0.0  
+
 **Purpose:** Common modelling pitfalls to avoid in archetype creation
+**Keywords:** archetype, anti-patterns, modelling, pitfalls, avoid, specialisation, semantics, best practice
 
 ---
 
-## 1. Overly Broad Concepts
+## Overly Broad Concepts
 
 **Anti-Pattern:** Creating archetypes that combine multiple unrelated clinical domains  
 **Example:** An archetype mixing vital signs, clinical assessment, and medication details.  
@@ -14,7 +14,7 @@
 
 ---
 
-## 2. Undocumented Terminology Bindings
+## Undocumented Terminology Bindings
 
 **Anti-Pattern:** Adding code bindings without specifying the coding authority or meaning  
 **Example:** Using arbitrary codes without referencing SNOMED CT/LOINC.  
@@ -23,7 +23,7 @@
 
 ---
 
-## 3. Excessive Specialisation
+## Excessive Specialisation
 
 **Anti-Pattern:** Creating dozens of specialisations for minor local variations  
 **Example:** Specialising a general “serum glucose” archetype for non-clinical uses.  
@@ -32,7 +32,7 @@
 
 ---
 
-## 4. Ignoring RM Semantics
+## Ignoring RM Semantics
 
 **Anti-Pattern:** Modelling data semantics that conflict with the openEHR Reference Model  
 **Example:** Using Entry types incorrectly (e.g., treating Observation as generic record).  
@@ -41,7 +41,7 @@
 
 ---
 
-## 5. Hardcoding Workflow Logic
+## Hardcoding Workflow Logic
 
 **Anti-Pattern:** Embedding clinical workflow or application UI constraints in archetype definitions  
 **Example:** Encoding process ordering as structural constraints.  
@@ -50,7 +50,7 @@
 
 ---
 
-## 6. Improper Cardinality Constraints
+## Improper Cardinality Constraints
 
 **Anti-Pattern:** Assigning arbitrary minimum/maximum values without clinical justification  
 **Example:** Mandatory multiple occurrences where single instance suffices.  
@@ -58,9 +58,3 @@
 **Fix:** Use appropriate and documented cardinality constraints.
 
 ---
-
-## Revision History
-
-| Version | Date | Notes |
-|---------|------|-------|
-|1.0.0    |2025-12 |Initial anti-patterns |

@@ -1,9 +1,9 @@
 # openEHR Archetype Design & Review Checklist
-**URI:** openehr://guides/archetypes/checklist  
-**Version:** 1.0.0  
+
 **Purpose:** Support consistent, high-quality archetype creation
 **Scope:** Quality guide for openEHR archetype design, review, and publication  
 **Source:** openEHR editorial guidelines, design principles, and review practices
+**Keywords:** design, review, checklist, quality, QA, consistency, best practice, clinical, terminology, structure, metadata, guideline
 
 ---
 
@@ -90,10 +90,3 @@
 - [ ] Link to related templates/use cases where this archetype is used.
 
 ---
-
-## Revision History
-
-| Version | Date       | Notes |
-|---------|------------|-------|
-| 1.1.0   | 2026-01    | Added translation and localisation section |
-| 1.0.0   | 2025-12- | Initial public release |

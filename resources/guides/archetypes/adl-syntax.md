@@ -1,12 +1,12 @@
 # openEHR Archetype ADL & Syntax Guide
-**URI:** openehr://guides/archetypes/adl-syntax
-**Version:** 1.0.0
+
 **Scope:** Correct and idiomatic use of ADL and the Archetype Model (AM)
 **Applies to:** ADL 1.4 / ADL 2 archetypes
+**Keywords:** ADL, archetype, syntax, guide, reference, formal, constraint, AM, terms, structure, path, definition
 
 ---
 
-## 1. Purpose of ADL
+## Purpose of ADL
 
 The Archetype Definition Language (ADL) is a **formal constraint language** used to express:
 - constraints on the openEHR Reference Model (RM)
@@ -17,7 +17,7 @@ ADL is **not** a programming language and **not** a data serialization format.
 
 ---
 
-## 2. Archetype Model Fundamentals
+## Archetype Model Fundamentals
 
 An archetype constrains:
 - RM classes (e.g. COMPOSITION, OBSERVATION, CLUSTER, ELEMENT, ITEM_TREE)
@@ -30,9 +30,9 @@ An archetype constrains:
 
 ---
 
-## 3. Archetype Sections and Their Meaning
+## Archetype Sections and Their Meaning
 
-### 3.1 Header Section
+### Header Section
 
 Includes:
 - archetype identifier
@@ -45,7 +45,7 @@ Includes:
 
 ---
 
-### 3.2 Definition Section
+### Definition Section
 
 The `definition` section contains the **formal constraint tree**.
 
@@ -55,7 +55,7 @@ The `definition` section contains the **formal constraint tree**.
 
 ---
 
-### 3.3 Ontology / Terminology Section
+### Ontology / Terminology Section
 
 Defines:
 - archetype terms (`at-codes`)
@@ -67,9 +67,9 @@ Defines:
 
 ---
 
-## 4. Constraint Syntax and Idioms
+## Constraint Syntax and Idioms
 
-### 4.1 RM Attribute Constraints
+### RM Attribute Constraints
 
 - Use RM attribute names exactly as defined
 - Do not invent or alias RM attributes
@@ -88,7 +88,7 @@ value matches {
 }
 ```
 
-### 4.2 Occurrences vs Cardinality
+### Occurrences vs Cardinality
 
 - occurrences applies to objects
 - cardinality applies to (multi-valued) attributes (containers)
@@ -96,7 +96,7 @@ value matches {
 **Rule:**
 > Never confuse occurrences with cardinality.
 
-### 4.3 Leaf Node Constraints
+### Leaf Node Constraints
 
 Leaf nodes must constrain:
 - the RM type (e.g. DV_QUANTITY)
@@ -106,7 +106,7 @@ Avoid unconstrained leaf nodes unless justified.
 
 ---
 
-## 5. Archetype Paths and Identifiers
+## Archetype Paths and Identifiers
 
 - Paths are derived from the constraint tree
 - Paths must be stable across versions
@@ -117,7 +117,7 @@ Avoid unconstrained leaf nodes unless justified.
 
 ---
 
-## 6. Slot Syntax and Semantics
+## Slot Syntax and Semantics
 
 Slots (allow_archetype, include, exclude) must:
 - Clearly state intent
@@ -127,7 +127,7 @@ Slots (allow_archetype, include, exclude) must:
 
 ---
 
-## 7. ADL Style and Readability
+## ADL Style and Readability
 
 Although ADL is machine-readable, it should also be:
 - Human-readable
@@ -140,7 +140,7 @@ Instructions:
 
 ---
 
-## 8. Versioning and Syntax Changes
+## Versioning and Syntax Changes
 
 - Syntax-only changes (formatting, comments) → patch version
 - Constraint changes affecting interpretation → minor/major version
@@ -148,7 +148,7 @@ Instructions:
 
 ---
 
-## 9. Common ADL Syntax Anti-Patterns
+## Common ADL Syntax Anti-Patterns
 
 - Invalid RM attribute names
 - Missing term definitions
@@ -158,7 +158,7 @@ Instructions:
 
 ---
 
-## 10. Validation Expectations
+## Validation Expectations
 
 All archetypes must:
 - Parse successfully with an ADL parser
@@ -168,6 +168,3 @@ All archetypes must:
 > Syntax correctness is a prerequisite for all higher-level modelling quality.
 
 ---
-| Version | Date    | Notes           |
-| ------- | ------- | --------------- |
-| 1.0.0   | 2025-12 | Initial release |

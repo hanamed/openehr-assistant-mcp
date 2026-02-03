@@ -1,8 +1,8 @@
 # openEHR Archetype Design Rules
-**URI:** openehr://guides/archetypes/rules  
-**Version:** 1.0.0  
+
 **Scope:** Concrete guidance and rules for modelling openEHR archetypes
-**Related:** see also openehr://guides/archetypes/structural-constraints and openehr://guides/archetypes/terminology
+**Related:** check also `openehr://guides/archetypes/structural-constraints` and `openehr://guides/archetypes/terminology`
+**Keywords:** archetype, design, rules, modelling, guidance, ADL, structure
 
 ---
 
@@ -58,10 +58,3 @@
 - **Rule G2:** Avoid localised business logic encoded in archetype constraints.
 
 ---
-
-## Revision History
-
-| Version | Date | Summary |
-|---------|------------|---------|
-| 1.1.0    | 2026-01 | Added translation rules D3 and D4 |
-| 1.0.0    | 2025-12 | Initial rules set |

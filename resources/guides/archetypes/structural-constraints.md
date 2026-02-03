@@ -1,11 +1,11 @@
 # openEHR Archetype Structural Constraint Guide
-**URI:** openehr://guides/archetypes/structural-constraints  
-**Version:** 1.0.0  
-**Scope:** Cardinality, existence, occurrences, slots, and structural constraints
+
+**Purpose:** Provide guidance on how to use archetype constraints to achieve clinically meaningful structure
+**Keywords:** cardinality, existence, occurrences, slots, structural, constraints, rules, structure, ADL
 
 ---
 
-## 1. Design Philosophy
+## Design Philosophy
 
 Archetypes should:
 - Be **clinically safe**
@@ -16,9 +16,9 @@ Archetypes should:
 
 ---
 
-## 2. Existence (Mandatory vs Optional)
+## Existence (Mandatory vs Optional)
 
-### 2.1 Mandatory Elements (`existence = 1..1`)
+### Mandatory Elements (`existence = 1..1`)
 
 Use only when:
 - The data item is *intrinsic* to the concept
@@ -29,7 +29,7 @@ Use only when:
 
 ---
 
-### 2.2 Optional Elements (`existence = 0..1`)
+### Optional Elements (`existence = 0..1`)
 
 Default choice for:
 - Contextual qualifiers
@@ -37,9 +37,9 @@ Default choice for:
 
 ---
 
-## 3. Cardinality and Occurrences
+## Cardinality and Occurrences
 
-### 3.1 Single vs Multiple
+### Single vs Multiple
 
 - Use single occurrences when the real-world concept is singular
 - Use multiple occurrences only when repetition is clinically meaningful
@@ -50,7 +50,7 @@ Default choice for:
 
 ---
 
-### 3.2 Upper Bounds
+### Upper Bounds
 
 Upper bounds should:
 - Reflect real-world constraints
@@ -59,9 +59,9 @@ Upper bounds should:
 
 ---
 
-## 4. Slots and Archetype Reuse
+## Slots and Archetype Reuse
 
-### 4.1 When to Use Slots
+### When to Use Slots
 
 Slots are appropriate when:
 - The content varies by context
@@ -70,7 +70,7 @@ Slots are appropriate when:
 
 ---
 
-### 4.2 Slot Constraints
+### Slot Constraints
 
 - Constrain slots by **archetype type and purpose**
 - Avoid unconstrained slots unless absolutely necessary
@@ -78,7 +78,7 @@ Slots are appropriate when:
 
 ---
 
-## 5. Clusters vs Elements
+## Clusters vs Elements
 
 - Use **CLUSTER** for logically grouped sub-concepts
 - Use **ELEMENT** for atomic data values
@@ -86,7 +86,7 @@ Slots are appropriate when:
 
 ---
 
-## 6. Avoiding Over-Constraint
+## Avoiding Over-Constraint
 
 **Do not encode:**
 - UI layout assumptions
@@ -98,7 +98,7 @@ Those belong in **templates**, not archetypes.
 
 ---
 
-## 7. Structural Anti-Patterns
+## Structural Anti-Patterns
 
 - Making everything mandatory
 - Excessive nesting without semantic value
@@ -107,16 +107,10 @@ Those belong in **templates**, not archetypes.
 
 ---
 
-## 8. Review Questions
+## Review Questions
 
 - Could this constraint prevent legitimate reuse?
 - Is this constraint universally true?
 - Would a template be a better place for this rule?
 
 ---
-
-## Revision History
-
-| Version | Date | Notes |
-|--------|------|------|
-| 1.0.0 | 2025-12 | Initial release |

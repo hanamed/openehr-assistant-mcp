@@ -1,12 +1,12 @@
 # openEHR Template Design Principles
-**URI:** openehr://guides/templates/principles  
-**Version:** 1.0.0  
+
 **Scope:** Foundational principles for designing high-quality openEHR templates (OET/OPT)  
 **Source:** openEHR Template Specifications, CKM modelling practices
+**Keywords:** templates, OET, OPT, design, principles
 
 ---
 
-## 1. Use Case Specificity
+## Use Case Specificity
 
 **Definition:** A template is a clinical dataset definition designed for a **particular use case, scenario, or workflow** (e.g., "Discharge Summary", "Vital Signs Monitoring"). 
 
@@ -16,7 +16,7 @@
 
 ---
 
-## 2. Aggregation and Composition
+## Aggregation and Composition
 
 **Definition:** Templates serve as the assembly layer, aggregating multiple archetypes into a coherent document or data structure (usually a COMPOSITION).
 
@@ -26,7 +26,7 @@
 
 ---
 
-## 3. The "Narrowing" Principle
+## The "Narrowing" Principle
 
 **Definition:** Templates can only **further constrain** (narrow) the rules defined in the underlying archetypes. They cannot relax constraints or add data points that aren't supported by the archetype's structure.
 
@@ -37,7 +37,7 @@
 
 ---
 
-## 4. Separation of Design-time and Run-time
+## Separation of Design-time and Run-time
 
 **Definition:** openEHR distinguishes between the **Source Template (OET)** used for authoring and the **Operational Template (OPT)** used for technical implementation.
 
@@ -47,7 +47,7 @@
 
 ---
 
-## 5. UI and Presentation Awareness
+## UI and Presentation Awareness
 
 **Definition:** Templates often bridge the gap between clinical models and user interfaces, providing hints for how data should be displayed or captured.
 
@@ -57,7 +57,7 @@
 
 ---
 
-## 6. Template Reuse and Embedding
+## Template Reuse and Embedding
 
 **Definition:** Templates can be designed to be modular and reusable by embedding them within other templates.
 
@@ -65,9 +65,3 @@
 - Encourages consistency across different clinical documents (e.g., reusing a "Patient Header" template).
 
 ---
-
-## Revision History
-
-| Version | Date | Summary |
-|---------|------------|---------|
-| 1.0.0    | 2025-12 | Initial release |

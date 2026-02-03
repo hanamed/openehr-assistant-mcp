@@ -29,7 +29,7 @@ class Guides implements ProviderInterface
     {
         $files = $this->getFiles([
             APP_RESOURCES_DIR . '/guides/archetypes',
-            APP_RESOURCES_DIR . '/guides/template',
+            APP_RESOURCES_DIR . '/guides/templates',
         ]);
         $completions = [];
 
