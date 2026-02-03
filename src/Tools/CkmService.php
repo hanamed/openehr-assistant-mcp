@@ -23,19 +23,19 @@ final readonly class CkmService
     }
 
     /**
-     * Search for and discover candidate openEHR Archetypes in the Clinical Knowledge Manager (CKM) matching a given criteria.
+     * Search and discover candidate openEHR Archetypes in the Clinical Knowledge Manager (CKM).
      *
-     * Use this tool when you need to *discover* candidate archetypes before fetching full definitions.
+     * Use this tool when you need to *discover* candidate archetypes before fetching their full definitions.
      * It is typically the first step in an LLM workflow:
      * 1) Search by a domain keyword (e.g. "blood pressure", "medication", "problem list")
      * 2) Inspect the returned metadata for plausible matches
      * 3) Take the returned CKM identifier (CID) and call `ckm_archetype_get` tool to retrieve the full archetype definition.
      *
      * @param string $keyword
-     *   A human-oriented search string (one or multiple words); wildcards `*` supported; prefer meaningful clinical terms over internal codes, e.g. "blood pressure", "medication", "diabetes", "body weight".
+     *   Query search string (one or multiple words); wildcards `*` supported; prefer meaningful clinical terms over internal codes, e.g. "blood pressure", "medication", "diabetes", "body weight".
      *
      * @param int $limit
-     *   The maximum number of Archetypes returned in the call; defaults to 20.
+     *   The maximum number of result items to be returned; defaults to 20.
      *
      * @param int $offset
      *   The offset into the result set, for paging; defaults to 0.
@@ -162,11 +162,12 @@ final readonly class CkmService
      *
      * Use this tool after you have identified a candidate archetype (usually from the `ckm_archetype_search` tool),
      * or when you already know the archetype CID (e.g. "1013.1.7850") or archetype-id (e.g. "openEHR-EHR-OBSERVATION.blood_pressure.v1").
-     * It fetches the *full archetype definition* from CKM so an LLM can:
+     * It fetches the *full archetype definition* from CKM so an LLM can process it according to relevant guides, e.g.:
      * - understand the structure and semantic or meaning of nodes/attributes,
      * - extract constraints, translations, and terminology bindings,
      * - generate templates or implementation guidance,
      * - or cite the definition content in downstream reasoning.
+     * If a guide is not yet available, use the `guide_search` tool to discover relevant guides applicable to the archetype and the user request.
      * Returned content and formats:
      * - "adl": ADL source text (best for detailed archetype semantics and constraints)
      * - "xml": XML representation (similar to "adl", but helpful when consuming via XML tooling)
@@ -232,10 +233,10 @@ final readonly class CkmService
      * 3) Take the returned CKM identifier (CID) and call `ckm_template_get` tool to retrieve the content.
      *
      * @param string $keyword
-     *   A human-oriented search string, one or multiple words, wildcards `*` supported.
+     *   Query search string, one or multiple words, wildcards `*` supported.
      *
      * @param int $limit
-     *   The maximum number of Templates returned; defaults to 20.
+     *   The maximum number of result items to be returned; defaults to 20.
      *
      * @param int $offset
      *   The offset into the result set, for paging; defaults to 0.
@@ -359,6 +360,11 @@ final readonly class CkmService
      *
      * Use this tool to *retrieve* an openEHR Template from CKM after you have identified a candidate template (usually from the `ckm_template_search` tool),
      * or when you already know the template CID (e.g. "1013.26.244").
+     * It fetches the *full Template definition* from CKM so an LLM can process it according to relevant guides, e.g.:
+     * - understand the structure and semantic or meaning of nodes/attributes,
+     * - extract constraints, translations, and terminology bindings
+     * - or cite the definition content in downstream reasoning.
+     * If a guide is not yet available, use the `guide_search` tool to discover relevant guides applicable to the Template and the user request.
      * Returned content and formats:
      * - "oet": Template source (XML) - the unflattened version (design-time template).
      * - "opt": Operational Template (XML) - the flattened version of the Template, containing all archetype constraints.
