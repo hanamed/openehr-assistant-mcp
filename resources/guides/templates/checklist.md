@@ -2,7 +2,7 @@
 
 **Scope:** A practical checklist for reviewing and validating openEHR templates
 **Related:** check also `openehr://guides/templates/principles` and `openehr://guides/templates/rules` guides
-**Keywords:** design, review, checklist, quality, QA, consistency, best practice, clinical, terminology, structure, metadata, guideline
+**Keywords:** design, review, checklist, quality, QA, consistency, best practice, clinical, terminology, structure, metadata, guideline, validation
 
 ---
 

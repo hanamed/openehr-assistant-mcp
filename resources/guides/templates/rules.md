@@ -2,7 +2,7 @@
 
 **Scope:** Concrete modelling rules and best practices for openEHR templates
 **Related:** openehr://guides/templates/principles, openehr://guides/templates/oet-syntax
-**Keywords:** template, OET, OPT, design, rules, modeling, guidance, structure
+**Keywords:** template, OET, OPT, design, rules, modeling, guidance, structure, lint, checks, validation
 
 ---
 

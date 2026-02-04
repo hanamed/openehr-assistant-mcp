@@ -2,7 +2,7 @@
 
 **Scope:** Normative rules for modelling openEHR archetypes
 **Related:** `openehr://guides/archetypes/structural-constraints`, `openehr://guides/archetypes/terminology`
-**Keywords:** archetype, rules, modelling, ADL
+**Keywords:** ADL, AOM, rules, modeling, lint, checks, validation
 
 ---
 

@@ -1,7 +1,7 @@
 # openEHR Archetype ADL & Syntax Guide
 
 **Scope:** Correct and idiomatic use of ADL and the Archetype Object Model (AOM)
-**Keywords:** ADL, archetype, syntax, guide, reference, formal, constraint, AM, AOM, terms, structure, path, definition
+**Keywords:** ADL, archetype, syntax, guide, reference, formal, constraint, AM, AOM, terms, structure, path, definition, lint
 
 ---
 

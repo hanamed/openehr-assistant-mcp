@@ -2,7 +2,7 @@
 
 **Scope:** Technical specification of the OET (Ocean Template) XML format  
 **Source:** Ocean Template Designer Documentation, CKM analysis
-**Keywords:** OET, OPT, XML, constraint, template, specification, syntax, validation, design, clinical, use case
+**Keywords:** OET, OPT, XML, constraint, template, specification, syntax, validation, design, clinical, lint, validation, definition
 
 ---
 
