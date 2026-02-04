@@ -70,7 +70,7 @@ readonly final class TypeSpecificationService
      *
      * This tool is designed for LLM workflows that need to:
      * - discover the canonical definition of an openEHR Type (class),
-     * - locate the exact type specification server resource uri,
+     * - locate the exact type specification URL or server resource URI,
      * - or fetch the full definition via the `type_specification_get` tool.
      *
      * @param string $namePattern

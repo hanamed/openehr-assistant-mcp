@@ -107,10 +107,10 @@ final readonly class GuideService
     }
 
     /**
-     * Retrieve a guide's full markdown content by URI or by (category, name).
+     * Fetch the full content of an openEHR guide by its canonical URI or by specifying its category and name.
      *
-     * This tool retrieves the full openEHR guide for specific implementation tasks.
-     * Such guides describe modeling workflows, best practices, syntax checklists, antipatterns and other guidance on demand.
+     * Use this tool to retrieve an openEHR guide for a specific processing or implementation task around Archetype, Templates or specifications.
+     * Such guides describe modeling workflows, best practices, syntax checklists, principal rules, antipatterns and other guidance on demand.
      *
      * @param string $uri
      *   Canonical guide URI (openehr://guides/{category}/{name}). Optional when category and name are provided.

@@ -158,7 +158,7 @@ final readonly class CkmService
     }
 
     /**
-     * Retrieve the full definition of an Archetype from CKM by its identifier, serialized in a specified format.
+     * Retrieve the full definition of an Archetype from CKM, serialized in a specified format.
      *
      * Use this tool after you have identified a candidate archetype (usually from the `ckm_archetype_search` tool),
      * or when you already know the archetype CID (e.g. "1013.1.7850") or archetype-id (e.g. "openEHR-EHR-OBSERVATION.blood_pressure.v1").
@@ -167,7 +167,7 @@ final readonly class CkmService
      * - extract constraints, translations, and terminology bindings,
      * - generate templates or implementation guidance,
      * - or cite the definition content in downstream reasoning.
-     * If a guide is not yet available, use the `guide_search` tool to discover relevant guides applicable to the archetype and the user request.
+     * When guides are not yet available, use the `guide_search` tool to discover them applicable to the archetype and the user request.
      * Returned content and formats:
      * - "adl": ADL source text (best for detailed archetype semantics and constraints)
      * - "xml": XML representation (similar to "adl", but helpful when consuming via XML tooling)
@@ -362,9 +362,9 @@ final readonly class CkmService
      * or when you already know the template CID (e.g. "1013.26.244").
      * It fetches the *full Template definition* from CKM so an LLM can process it according to relevant guides, e.g.:
      * - understand the structure and semantic or meaning of nodes/attributes,
-     * - extract constraints, translations, and terminology bindings
+     * - extract constraints, translations, and terminology bindings,
      * - or cite the definition content in downstream reasoning.
-     * If a guide is not yet available, use the `guide_search` tool to discover relevant guides applicable to the Template and the user request.
+     * When guides are not yet available, use the `guide_search` tool to discover them applicable to the Template and the user request.
      * Returned content and formats:
      * - "oet": Template source (XML) - the unflattened version (design-time template).
      * - "opt": Operational Template (XML) - the flattened version of the Template, containing all archetype constraints.
