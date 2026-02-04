@@ -1,8 +1,9 @@
 <?php /** @noinspection PhpDefineCanBeReplacedWithConstInspection */
 
 define('APP_NAME', 'openehr-assistant-mcp');
-define('APP_TITLE', 'openEHR Assistant MCP Server');
-define('APP_DESCRIPTION', 'A Model Context Protocol (MCP) Server to assist with various openEHR related tasks and APIs');
+define('APP_TITLE', 'openEHR Assistant');
+define('APP_DESCRIPTION', 'MCP Server to assist with various openEHR specifications or modeling related tasks.');
+define('APP_ICON', 'https://www.cadasto.com/wp-content/uploads/2025/11/cropped-cadasto-favicon-32x32.png');
 define('APP_VERSION', '0.10.0');
 define('APP_ENV', getenv('APP_ENV') ?: 'production');
 define('LOG_LEVEL', getenv('LOG_LEVEL') ?: 'info');

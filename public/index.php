@@ -9,6 +9,7 @@ use Cadasto\OpenEHR\MCP\Assistant\Resources\Guides;
 use Cadasto\OpenEHR\MCP\Assistant\Resources\Terminologies;
 use Mcp\Capability\Registry\Container;
 use Mcp\Schema\Enum\ProtocolVersion;
+use Mcp\Schema\Icon;
 use Mcp\Server;
 use Mcp\Server\Session\FileSessionStore;
 use Mcp\Server\Transport\StdioTransport;
@@ -65,11 +66,12 @@ try {
 
     // Build the server
     $builder = Server::builder()
-        ->setServerInfo(APP_TITLE, APP_VERSION, APP_DESCRIPTION)
+        ->setServerInfo(APP_TITLE, APP_VERSION, APP_DESCRIPTION, [new Icon(APP_ICON)])
         ->setDiscovery(APP_DIR, ['src/Prompts', 'src/Tools', 'src/Resources'], cache: $cache)
         ->setSession(new FileSessionStore(APP_DATA_DIR . '/sessions'), ttl: 10 * 60)
         ->setProtocolVersion(ProtocolVersion::V2025_03_26)
         ->setContainer($container)
+        ->setInstructions(file_get_contents(APP_DIR . '/resources/server-instructions.md') ?: null)
         ->setLogger($logger);
     // add resources
     Guides::addResources($builder);
