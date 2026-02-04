@@ -59,14 +59,16 @@ final class AbstractPromptTest extends TestCase
 
     public function testLoadValidPrompt(): void
     {
-        $yamlContent = <<<YAML
-messages:
-  - role: assistant
-    content: "You are a helpful assistant."
-  - role: user
-    content: "Hello!"
-YAML;
-        file_put_contents($this->tempPromptsDir . '/test_prompt.yaml', $yamlContent);
+        $mdContent = <<<MD
+## Role: assistant
+
+You are a helpful assistant.
+
+## Role: user
+
+Hello!
+MD;
+        file_put_contents($this->tempPromptsDir . '/test_prompt.md', $mdContent);
 
         $promptInstance = $this->getMockPrompt($this->tempPromptsDir);
         $messages = $promptInstance->testLoad('test_prompt');
@@ -90,34 +92,14 @@ YAML;
         $promptInstance->testLoad('non_existent');
     }
 
-    public function testLoadThrowsOnInvalidYaml(): void
+    public function testLoadThrowsOnInvalidFormat(): void
     {
-        file_put_contents($this->tempPromptsDir . '/invalid.yaml', "not: an: array: [");
+        file_put_contents($this->tempPromptsDir . '/invalid.md', "just some text without roles");
         $promptInstance = $this->getMockPrompt($this->tempPromptsDir);
-        $this->expectException(\Exception::class);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid prompt file format');
         $promptInstance->testLoad('invalid');
     }
 
-    public function testLoadThrowsOnMissingMessages(): void
-    {
-        file_put_contents($this->tempPromptsDir . '/no_messages.yaml', "foo: bar");
-        $promptInstance = $this->getMockPrompt($this->tempPromptsDir);
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Prompt file missing messages');
-        $promptInstance->testLoad('no_messages');
-    }
 
-    public function testLoadThrowsOnInvalidMessageFormat(): void
-    {
-        $yamlContent = <<<YAML
-messages:
-  - role: system
-    # missing content
-YAML;
-        file_put_contents($this->tempPromptsDir . '/invalid_message.yaml', $yamlContent);
-        $promptInstance = $this->getMockPrompt($this->tempPromptsDir);
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Invalid message format in prompt file');
-        $promptInstance->testLoad('invalid_message');
-    }
 }

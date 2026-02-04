@@ -9,6 +9,9 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 
 ## [Unreleased]
 
+### Changed
+- MCP Prompts: migrate files to markdown format.
+
 ## [0.10.0] - 2026-02-03
 
 ### Added

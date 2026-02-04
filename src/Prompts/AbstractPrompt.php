@@ -8,7 +8,6 @@ use InvalidArgumentException;
 use Mcp\Schema\Content\PromptMessage;
 use Mcp\Schema\Content\TextContent;
 use Mcp\Schema\Enum\Role;
-use Symfony\Component\Yaml\Yaml;
 
 abstract readonly class AbstractPrompt
 {
@@ -23,24 +22,33 @@ abstract readonly class AbstractPrompt
      */
     protected function loadPromptMessages(string $name): array
     {
-        $path = $this->getPromptsDir() . '/' . $name . '.yaml';
+        $path = $this->getPromptsDir() . '/' . $name . '.md';
 
         if (!is_file($path)) {
             throw new InvalidArgumentException(sprintf('Prompt file not found: %s', $path));
         }
 
-        $data = Yaml::parseFile($path);
-
-        if (!is_array($data) || !isset($data['messages']) || !is_array($data['messages'])) {
-            throw new InvalidArgumentException(sprintf('Prompt file missing messages: %s', $path));
+        $content = file_get_contents($path);
+        if ($content === false) {
+            throw new InvalidArgumentException(sprintf('Could not read prompt file: %s', $path));
         }
 
         $messages = [];
-        foreach ($data['messages'] as $message) {
-            if (!is_array($message) || !isset($message['role'], $message['content'])) {
-                throw new InvalidArgumentException(sprintf('Invalid message format in prompt file: %s', $path));
+        $parts = preg_split('/^## Role: (assistant|user)\b/mi', $content, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+
+        if ($parts === false || count($parts) < 2) {
+            throw new InvalidArgumentException(sprintf('Invalid prompt file format: %s', $path));
+        }
+
+        for ($i = 0; $i < count($parts); $i += 2) {
+            $role = trim($parts[$i]);
+            $text = trim($parts[$i + 1] ?? '');
+
+            if ($text === '') {
+                continue;
             }
-            $messages[] = new PromptMessage(Role::from((string)$message['role']), new TextContent((string)$message['content']));
+
+            $messages[] = new PromptMessage(Role::from($role), new TextContent($text));
         }
 
         return $messages;
